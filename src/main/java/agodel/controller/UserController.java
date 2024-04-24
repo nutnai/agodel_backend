@@ -4,23 +4,22 @@ package agodel.controller;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import agodel.model.UserMock;
-import agodel.service.UserMockService;
 import agodel.model.UserModel;
+import agodel.service.UserMockService;
 import agodel.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @Controller
-@RequestMapping("/home")
-public class HomeController {
+@RequestMapping("/user")
+public class UserController {
     private UserMockService userMockService;
     private UserService userService;
 
-    public HomeController(UserMockService userMockService,UserService userService) {
+    public UserController(UserMockService userMockService, UserService userService) {
         this.userMockService = userMockService;
         this.userService = userService;
     }
@@ -44,8 +43,26 @@ public class HomeController {
         return map;
     }
 
+    @PostMapping("/postTest")
+    public String test(@RequestBody Map<String, Object> body){
+        System.out.println("kuy");
+        return (String) body.get("username");
+    }
+
+    @PostMapping("/getUser")
+    public List<UserModel>  get(@RequestBody Map<String, Object> body){
+        System.out.println(userService.getUser());
+        return userService.getUser();
+    }
+
+    @PostMapping("/register")
+    public String  register(@RequestBody Map<String, Object> body){
+        return userService.register(body);
+    }
+
     @PostMapping("/login")
-    public String checkUser(@RequestBody Map<String, Object> body) {
+    public Boolean checkUser(@RequestBody Map<String, Object> body) {
+
         return userService.checkUser(body);
     }
 }

@@ -162,3 +162,8 @@ CREATE TABLE `user` (
   UNIQUE KEY `id` (`id`)
 ) ;
 
+CREATE TABLE `user_count` (
+  `type` varchar(255) NOT NULL,
+  `count` INT NOT NULL
+) ;
+

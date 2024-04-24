@@ -11,15 +11,13 @@ import lombok.Setter;
 @Setter
 @Entity
 @AllArgsConstructor
-@Table(name = "user")
-public class UserModel {
+@Table(name = "user_count")
+public class UserCountModel {
 
     @Id
-    private String id;
+    private String type;
+    private int count;
 
-    private String username;
-    private String password;
-
-    public UserModel() {
+    public UserCountModel() {
     }
 }

@@ -6,26 +6,46 @@ import java.util.Objects;
 
 import agodel.data.UserRepository;
 import agodel.model.UserModel;
-import org.apache.catalina.User;
 import org.springframework.stereotype.Service;
+
+import agodel.service.UserCountService;
 
 @Service
 public class UserService {
     private UserRepository userRepository;
 
-    public UserService(UserRepository userRepository) {
+    private UserCountService userCountService;
+
+    public UserService(UserRepository userRepository, UserCountService userCountService) {
+
         this.userRepository = userRepository;
+        this.userCountService= userCountService;
     }
 
     public List<UserModel> getUser() {
         return userRepository.findAll();
     }
 
-    public String checkUser(Map<String, Object> body){
+    public Boolean checkUser(Map<String, Object> body){
         List<UserModel> user = userRepository.findByUsername((String)body.get("username"));
         if(user.isEmpty()){
-            return "error kuy";
+            return false;
         }
-        return "ok";
+        return true;
+    }
+
+    public String register(Map<String, Object> body){
+        if(this.checkUser(body)){
+            return "exits";
+        }
+        String type = (String) body.get("type");
+
+        String id = type.equals("customer") ? userCountService.getCountCustomer(): userCountService.getCountOwner();
+        UserModel user = new UserModel();
+        user.setId(id);
+        user.setUsername((String)body.get("username"));
+        user.setPassword((String)body.get("password"));
+        userRepository.save(user);
+        return "good";
     }
 }

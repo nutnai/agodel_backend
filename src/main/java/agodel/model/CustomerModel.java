@@ -11,8 +11,8 @@ import lombok.Setter;
 @Setter
 @Entity
 @AllArgsConstructor
-@Table(name = "user")
-public class UserModel {
+@Table(name = "customer")
+public class CustomerModel {
 
     @Id
     private String id;
@@ -20,6 +20,6 @@ public class UserModel {
     private String username;
     private String password;
 
-    public UserModel() {
+    public CustomerModel() {
     }
 }
