@@ -1,4 +1,4 @@
-package com.agodel.agodel.data;
+package com.agodel.agodel.database;
 
 import com.agodel.agodel.model.UserMock;
 import org.springframework.data.jpa.repository.JpaRepository;
