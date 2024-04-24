@@ -1,9 +1,9 @@
-package com.agodel.agodel.service;
+package agodel.service;
 
 import java.util.List;
 
-import com.agodel.agodel.data.UserMockRepository;
-import com.agodel.agodel.model.UserMock;
+import agodel.data.UserMockRepository;
+import agodel.model.UserMock;
 import org.springframework.stereotype.Service;
 
 @Service

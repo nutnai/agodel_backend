@@ -1,4 +1,4 @@
-package com.agodel.agodel.model;
+package agodel.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;

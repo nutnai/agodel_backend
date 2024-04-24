@@ -1,26 +1,28 @@
-package com.agodel.agodel.controller;
+package agodel.controller;
 
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
-import com.agodel.agodel.model.UserMock;
-import com.agodel.agodel.service.UserMockService;
+import agodel.model.UserMock;
+import agodel.service.UserMockService;
+import agodel.model.UserModel;
+import agodel.service.UserService;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @Controller
 @RequestMapping("/home")
 public class HomeController {
     private UserMockService userMockService;
+    private UserService userService;
 
-    public HomeController(UserMockService userMockService) {
+    public HomeController(UserMockService userMockService,UserService userService) {
         this.userMockService = userMockService;
+        this.userService = userService;
     }
 
     @GetMapping
@@ -40,5 +42,10 @@ public class HomeController {
         HashMap<String, String> map = new HashMap<>();
         map.put("key", "POST");
         return map;
+    }
+
+    @PostMapping("/login")
+    public String checkUser(@RequestBody Map<String, Object> body) {
+        return userService.checkUser(body);
     }
 }

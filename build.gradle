@@ -38,7 +38,11 @@ tasks.named('test') {
 }
 
 flyway {
-	url = "jdbc:mysql://localhost:3306/chula"
+	url = "jdbc:mysql://localhost:3306/agodel"
 	user = "root"
 	password = ""
+	validateOnMigrate = false
+	baselineVersion = "1"
+	baselineOnMigrate = true
+	baselineDescription = "Baseline migration"
 }
