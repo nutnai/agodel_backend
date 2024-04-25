@@ -5,7 +5,7 @@ CREATE TABLE `customer`
     `lastname`   tinytext,
     `phone`      tinytext,
     `email`      tinytext,
-    PRIMARY KEY (`customerID`)
+    PRIMARY KEY (`customer_id`)
 );
 
 CREATE TABLE `owner`
@@ -15,7 +15,7 @@ CREATE TABLE `owner`
     `lastname`  tinytext,
     `phone`     int DEFAULT NULL,
     `email`     tinytext,
-    PRIMARY KEY (`ownerID`)
+    PRIMARY KEY (`owner_id`)
 );
 
 CREATE TABLE `place`
@@ -24,7 +24,7 @@ CREATE TABLE `place`
     `owner_id` varchar(10) DEFAULT NULL,
     `name`    tinytext,
     `address` tinytext,
-    PRIMARY KEY (`placeID`),
+    PRIMARY KEY (`place_id`),
     KEY `owner_id` (`owner_id`),
     CONSTRAINT `place_ibfk_1` FOREIGN KEY (`owner_id`) REFERENCES `owner` (`owner_id`)
 );
@@ -44,10 +44,10 @@ CREATE TABLE `room`
 CREATE TABLE `place_room`
 (
     `id` INT AUTO_INCREMENT PRIMARY KEY,
-    `placeID` varchar(10) NOT NULL,
-    `roomID`  varchar(10) NOT NULL,
-    CONSTRAINT `place_room_ibfk_1` FOREIGN KEY (`placeID`) REFERENCES `place` (`place_id`),
-    CONSTRAINT `place_room_ibfk_2` FOREIGN KEY (`roomID`) REFERENCES `room` (`room_id`)
+    `place_id` varchar(10) NOT NULL,
+    `room_id`  varchar(10) NOT NULL,
+    CONSTRAINT `place_room_ibfk_1` FOREIGN KEY (`place_id`) REFERENCES `place` (`place_id`),
+    CONSTRAINT `place_room_ibfk_2` FOREIGN KEY (`room_id`) REFERENCES `room` (`room_id`)
 );
 
 CREATE TABLE `place_image`
@@ -72,55 +72,55 @@ CREATE TABLE `room_image`
 #   `paymentOwner_id` varchar(10) NOT NULL,
 #   `customer_id` varchar(10) DEFAULT NULL,
 #   PRIMARY KEY (`paymentOwner_id`),
-#   KEY `customerID` (`customerID`),
-#   CONSTRAINT `paymentcustomer_ibfk_1` FOREIGN KEY (`customerID`) REFERENCES `customer` (`customerID`)
+#   KEY `customer_id` (`customer_id`),
+#   CONSTRAINT `paymentcustomer_ibfk_1` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`customer_id`)
 # ) ;
 
 # CREATE TABLE `paymentowner` (
-#   `paymentOwnerID` varchar(10) NOT NULL,
-#   `ownerID` varchar(10) DEFAULT NULL,
-#   PRIMARY KEY (`paymentOwnerID`),
-#   KEY `ownerID` (`ownerID`),
-#   CONSTRAINT `paymentowner_ibfk_1` FOREIGN KEY (`ownerID`) REFERENCES `owner` (`ownerID`)
+#   `paymentOwner_id` varchar(10) NOT NULL,
+#   `owner_id` varchar(10) DEFAULT NULL,
+#   PRIMARY KEY (`paymentOwner_id`),
+#   KEY `owner_id` (`owner_id`),
+#   CONSTRAINT `paymentowner_ibfk_1` FOREIGN KEY (`owner_id`) REFERENCES `owner` (`owner_id`)
 # ) ;
 
 # CREATE TABLE `report` (
-#   `reportID` varchar(10) NOT NULL,
-#   `placeRoomID` varchar(10) DEFAULT NULL,
-#   `resortRoomID` varchar(10) DEFAULT NULL,
-#   `customerID` varchar(10) DEFAULT NULL,
+#   `report_id` varchar(10) NOT NULL,
+#   `placeRoom_id` varchar(10) DEFAULT NULL,
+#   `resortRoom_id` varchar(10) DEFAULT NULL,
+#   `customer_id` varchar(10) DEFAULT NULL,
 #   `reportType` tinytext,
 #   `dateStart` datetime DEFAULT NULL,
 #   `dateEnd` datetime DEFAULT NULL,
 #   `price` smallint DEFAULT NULL,
 #   `numberOfDay` smallint DEFAULT NULL,
-#   PRIMARY KEY (`reportID`),
-#   KEY `hotelRoomID` (`hotelRoomID`),
-#   KEY `customerID` (`customerID`),
-#   KEY `resortRoomID` (`resortRoomID`),
-#   CONSTRAINT `report_ibfk_1` FOREIGN KEY (`hotelRoomID`) REFERENCES `hotelroom` (`hotelRoomID`),
-#   CONSTRAINT `report_ibfk_2` FOREIGN KEY (`customerID`) REFERENCES `customer` (`customerID`),
-#   CONSTRAINT `report_ibfk_3` FOREIGN KEY (`resortRoomID`) REFERENCES `resortroom` (`resortRoomID`)
+#   PRIMARY KEY (`report_id`),
+#   KEY `hotelRoom_id` (`hotelRoom_id`),
+#   KEY `customer_id` (`customer_id`),
+#   KEY `resortRoom_id` (`resortRoom_id`),
+#   CONSTRAINT `report_ibfk_1` FOREIGN KEY (`hotelRoom_id`) REFERENCES `hotelroom` (`hotelRoom_id`),
+#   CONSTRAINT `report_ibfk_2` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`customer_id`),
+#   CONSTRAINT `report_ibfk_3` FOREIGN KEY (`resortRoom_id`) REFERENCES `resortroom` (`resortRoom_id`)
 # ) ;
 
 
 CREATE TABLE `receipt`
 (
-    `receiptID`    varchar(10) DEFAULT NULL,
+    `receipt_id`    varchar(10) DEFAULT NULL,
     `status`       tinytext,
-    `dateCreate`   datetime    DEFAULT NULL,
-    `datePay`      datetime    DEFAULT NULL,
-    `dateCheckIn`  datetime    DEFAULT NULL,
-    `dateCheckOut` datetime    DEFAULT NULL,
-    `dayCount`     smallint    DEFAULT NULL,
+    `date_create`   datetime    DEFAULT NULL,
+    `date_pay`      datetime    DEFAULT NULL,
+    `date_checkin`  datetime    DEFAULT NULL,
+    `date_checkout` datetime    DEFAULT NULL,
+    `day_count`     smallint    DEFAULT NULL,
     `price`        smallint    DEFAULT NULL,
-    `roomID`       varchar(10) DEFAULT NULL,
-    `customerID`   varchar(10) DEFAULT NULL,
-    PRIMARY KEY (`receiptID`),
-    KEY `roomID` (`roomID`),
-    KEY `customerID` (`customerID`),
-    CONSTRAINT `receipt_ibfk_1` FOREIGN KEY (`roomID`) REFERENCES `room` (`roomID`),
-    CONSTRAINT `receipt_ibfk_2` FOREIGN KEY (`customerID`) REFERENCES `customer` (`customerID`)
+    `room_id`       varchar(10) DEFAULT NULL,
+    `customer_id`   varchar(10) DEFAULT NULL,
+    PRIMARY KEY (`receipt_id`),
+    KEY `room_id` (`room_id`),
+    KEY `customer_id` (`customer_id`),
+    CONSTRAINT `receipt_ibfk_1` FOREIGN KEY (`room_id`) REFERENCES `room` (`room_id`),
+    CONSTRAINT `receipt_ibfk_2` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`customer_id`)
 );
 
 CREATE TABLE `user`
