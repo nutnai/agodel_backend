@@ -42,4 +42,8 @@ public class Receipt {
     @JoinColumn(name = "roomID")
     private Room roomID;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "customerID")
+    private CustomerModel customerID;
+
 }
