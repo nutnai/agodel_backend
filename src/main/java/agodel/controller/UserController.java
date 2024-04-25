@@ -5,10 +5,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import agodel.model.CustomerModel;
 import agodel.model.UserMock;
 import agodel.model.UserModel;
 import agodel.service.UserMockService;
 import agodel.service.UserService;
+import agodel.service.CustomerService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,9 +21,12 @@ public class UserController {
     private UserMockService userMockService;
     private UserService userService;
 
-    public UserController(UserMockService userMockService, UserService userService) {
+    private CustomerService customerService;
+
+    public UserController(UserMockService userMockService, UserService userService,CustomerService customerService) {
         this.userMockService = userMockService;
         this.userService = userService;
+        this.customerService = customerService;
     }
 
     @GetMapping
@@ -59,6 +64,11 @@ public class UserController {
     public String  register(@RequestBody Map<String, Object> body){
         return userService.register(body);
     }
+
+//    @PostMapping("/customer")
+//    public String  customer(@RequestBody Map<String, Object> body){
+//        return customerService.register(body);
+//    }
 
     @PostMapping("/login")
     public String login(@RequestBody Map<String, Object> body) {
