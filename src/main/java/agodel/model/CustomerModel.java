@@ -1,5 +1,6 @@
 package agodel.model;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
@@ -15,9 +16,11 @@ import lombok.Setter;
 public class CustomerModel {
 
     @Id
-    private String customerId;
+    private String customerID;
 
+    @Column(name = "firstName")
     private String firstName;
+    @Column(name = "lastName")
     private String lastName;
     private String phone;
     private String email;

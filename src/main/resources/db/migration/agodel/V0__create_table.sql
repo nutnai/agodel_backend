@@ -10,8 +10,8 @@ CREATE TABLE `admin` (
 
 CREATE TABLE `customer` (
   `customerID` varchar(10) NOT NULL,
-  `firstName` tinytext,
-  `lastName` tinytext,
+  `first_name` tinytext,
+  `last_name` tinytext,
   `phone` tinytext,
   `email` tinytext,
   PRIMARY KEY (`customerID`)
