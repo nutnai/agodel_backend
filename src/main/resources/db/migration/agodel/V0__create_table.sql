@@ -114,7 +114,12 @@ CREATE TABLE `receipt`
     `dayCount`     smallint    DEFAULT NULL,
     `price`        smallint    DEFAULT NULL,
     `roomID`       varchar(10) DEFAULT NULL,
-    CONSTRAINT `receipt_ibfk_1` FOREIGN KEY (`roomID`) REFERENCES `room` (`roomID`)
+    `customerID`   varchar(10) DEFAULT NULL,
+    PRIMARY KEY (`receiptID`),
+    KEY `roomID` (`roomID`),
+    KEY `customerID` (`customerID`),
+    CONSTRAINT `receipt_ibfk_1` FOREIGN KEY (`roomID`) REFERENCES `room` (`roomID`),
+    CONSTRAINT `receipt_ibfk_2` FOREIGN KEY (`customerID`) REFERENCES `customer` (`customerID`)
 );
 
 CREATE TABLE `user`
