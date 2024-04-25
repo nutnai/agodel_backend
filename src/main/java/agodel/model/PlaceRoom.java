@@ -9,6 +9,11 @@ import lombok.Setter;
 @Entity
 @Table(name = "place_room")
 public class PlaceRoom {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "placeID", nullable = false)
     private PlaceModel placeID;

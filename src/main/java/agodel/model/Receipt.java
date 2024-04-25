@@ -11,6 +11,8 @@ import java.time.Instant;
 @Entity
 @Table(name = "receipt")
 public class Receipt {
+
+    @Id
     @Column(name = "receiptID", length = 10)
     private String receiptID;
 
