@@ -43,6 +43,7 @@ CREATE TABLE `room`
 
 CREATE TABLE `place_room`
 (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
     `placeID` varchar(10) NOT NULL,
     `roomID`  varchar(10) NOT NULL,
     CONSTRAINT `place_room_ibfk_1` FOREIGN KEY (`placeID`) REFERENCES `place` (`placeID`),
