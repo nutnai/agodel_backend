@@ -61,8 +61,8 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public Boolean checkUser(@RequestBody Map<String, Object> body) {
+    public String login(@RequestBody Map<String, Object> body) {
 
-        return userService.checkUser(body);
+        return userService.login(body);
     }
 }

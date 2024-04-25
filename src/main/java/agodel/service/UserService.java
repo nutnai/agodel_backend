@@ -48,4 +48,17 @@ public class UserService {
         userRepository.save(user);
         return "good";
     }
+
+    public String login(Map<String, Object> body){
+        String username = (String)body.get("username");
+        List<UserModel> users = userRepository.findByUsername(username);
+        if (users.isEmpty()){
+            return  "don't have this username";
+        }
+        String password = users.get(0).getPassword();
+        if(((String)body.get("password")).equals(password)){
+            return username.hashCode()+"";
+        }
+        return "wrong password";
+    }
 }
