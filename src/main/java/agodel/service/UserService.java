@@ -6,15 +6,22 @@ import java.util.Objects;
 
 import agodel.data.UserRepository;
 import agodel.model.UserModel;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import org.springframework.stereotype.Service;
 
 import agodel.service.UserCountService;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 public class UserService {
     private UserRepository userRepository;
 
     private UserCountService userCountService;
+
+    @PersistenceContext
+    private EntityManager entityManager;
 
     public UserService(UserRepository userRepository, UserCountService userCountService) {
 
@@ -57,8 +64,17 @@ public class UserService {
         }
         String password = users.get(0).getPassword();
         if(((String)body.get("password")).equals(password)){
-            return username.hashCode()+"";
+            return users.get(0).getId();
         }
         return "wrong password";
+    }
+
+    public String resetPassword(Map<String, Object> body){
+        String newPassword = (String)body.get("newPassword");
+        UserModel userModel = userRepository.findById((String)body.get("id")).get();
+        userModel.setPassword(newPassword);
+        entityManager.merge(userModel);
+        return "password changed";
+
     }
 }

@@ -65,4 +65,10 @@ public class UserController {
 
         return userService.login(body);
     }
+
+    @PostMapping("/resetPassword")
+    public String resetPassword(@RequestBody Map<String, Object> body) {
+
+        return userService.resetPassword(body);
+    }
 }
