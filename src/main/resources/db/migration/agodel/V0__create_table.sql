@@ -38,16 +38,15 @@ CREATE TABLE `room`
     `numberPeople` smallint    DEFAULT NULL,
     `price`        smallint    DEFAULT NULL,
     PRIMARY KEY (`roomID`),
-    KEY `placeID` (`placeID`),
-    CONSTRAINT `place_ibfk_1` FOREIGN KEY (`placeID`) REFERENCES `place` (`placeID`)
+    CONSTRAINT `room_ibfk_1` FOREIGN KEY (`placeID`) REFERENCES `place` (`placeID`)
 );
 
 CREATE TABLE `place_room`
 (
     `placeID` varchar(10) NOT NULL,
     `roomID`  varchar(10) NOT NULL,
-    CONSTRAINT `place_ibfk_1` FOREIGN KEY (`placeID`) REFERENCES `place` (`placeID`),
-    CONSTRAINT `room_ibfk_2` FOREIGN KEY (`roomID`) REFERENCES `room` (`roomID`)
+    CONSTRAINT `place_room_ibfk_1` FOREIGN KEY (`placeID`) REFERENCES `place` (`placeID`),
+    CONSTRAINT `place_room_ibfk_2` FOREIGN KEY (`roomID`) REFERENCES `room` (`roomID`)
 );
 
 CREATE TABLE `place_image`
@@ -56,16 +55,16 @@ CREATE TABLE `place_image`
     `imageID` varchar(10) NOT NULL,
     `image`   MEDIUMBLOB,
     PRIMARY KEY (`imageID`),
-    CONSTRAINT `place_ibfk_1` FOREIGN KEY (`placeID`) REFERENCES `place` (`placeID`)
+    CONSTRAINT `place_image_ibfk_1` FOREIGN KEY (`placeID`) REFERENCES `place` (`placeID`)
 );
 
 CREATE TABLE `room_image`
 (
-    `roomID` varchar(10) NOT NULL,
+    `roomID`  varchar(10) NOT NULL,
     `imageID` varchar(10) NOT NULL,
     `image`   MEDIUMBLOB,
     PRIMARY KEY (`imageID`),
-    CONSTRAINT `room_ibfk_1` FOREIGN KEY (`roomID`) REFERENCES `place` (`roomID`)
+    CONSTRAINT `room_image_ibfk_1` FOREIGN KEY (`roomID`) REFERENCES `room` (`roomID`)
 );
 
 # CREATE TABLE `paymentcustomer` (
@@ -120,10 +119,11 @@ CREATE TABLE `receipt`
 
 CREATE TABLE `user`
 (
-    `id`       varchar(255)                                                  NOT NULL,
-    `username` varchar(255)                                                  NOT NULL,
-    `password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-    UNIQUE KEY `id` (`id`)
+    `id`       varchar(255) NOT NULL,
+    `username` varchar(255) NOT NULL,
+    `password` varchar(255) NOT NULL,
+    UNIQUE KEY `id` (`id`),
+    PRIMARY KEY (`id`)
 );
 
 CREATE TABLE `user_count`
