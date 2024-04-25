@@ -1,11 +1,10 @@
 package agodel.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+
 
 @Getter
 @Setter
@@ -15,10 +14,14 @@ import lombok.Setter;
 public class PlaceModel {
 
     @Id
-    private String id;
+    private String placeId;
 
-    private String username;
-    private String password;
+    private String name;
+    private String address;
+
+    @OneToOne
+    @JoinColumn(name = "ownerID", referencedColumnName = "ownerID")
+    private OwnerModel owner;
 
     public PlaceModel() {
     }
