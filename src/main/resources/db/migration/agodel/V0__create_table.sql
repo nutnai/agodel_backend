@@ -43,7 +43,7 @@ CREATE TABLE `room`
 
 CREATE TABLE `place_room`
 (
-    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `id` INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
     `place_id` varchar(10) NOT NULL,
     `room_id`  varchar(10) NOT NULL,
     CONSTRAINT `place_room_ibfk_1` FOREIGN KEY (`place_id`) REFERENCES `place` (`place_id`),
@@ -106,7 +106,7 @@ CREATE TABLE `room_image`
 
 CREATE TABLE `receipt`
 (
-    `receipt_id`    varchar(10) DEFAULT NULL,
+    `receipt_id`    varchar(10) NOT NULL,
     `status`       tinytext,
     `date_create`   datetime    DEFAULT NULL,
     `date_pay`      datetime    DEFAULT NULL,
