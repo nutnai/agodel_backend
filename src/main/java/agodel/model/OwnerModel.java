@@ -15,10 +15,10 @@ import lombok.Setter;
 public class OwnerModel {
 
     @Id
-    private String ownerID;
+    private String owner_id;
 
-    private String firstName;
-    private String lastName;
+    private String firstname;
+    private String lastname;
     private String phone;
     private String email;
 

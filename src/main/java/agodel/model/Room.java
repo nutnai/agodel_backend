@@ -10,12 +10,12 @@ import lombok.Setter;
 @Table(name = "room")
 public class Room {
     @Id
-    @Column(name = "roomID", nullable = false, length = 10)
-    private String roomID;
+    @Column(name = "room_id", nullable = false, length = 10)
+    private String room_id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "placeID")
-    private PlaceModel placeID;
+    @JoinColumn(name = "place_id")
+    private PlaceModel place_id;
 
     @Column(name = "bed")
     private Short bed;

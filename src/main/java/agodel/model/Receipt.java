@@ -13,8 +13,8 @@ import java.time.Instant;
 public class Receipt {
 
     @Id
-    @Column(name = "receiptID", length = 10)
-    private String receiptID;
+    @Column(name = "receipt_id", length = 10)
+    private String receipt_id;
 
     @Lob
     @Column(name = "status")
@@ -39,11 +39,11 @@ public class Receipt {
     private Short price;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "roomID")
-    private Room roomID;
+    @JoinColumn(name = "room_id")
+    private Room room_id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "customerID")
-    private CustomerModel customerID;
+    @JoinColumn(name = "customer_id")
+    private CustomerModel customer_id;
 
 }

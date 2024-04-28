@@ -15,11 +15,11 @@ public class PlaceRoom {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "placeID", nullable = false)
-    private PlaceModel placeID;
+    @JoinColumn(name = "place_id", nullable = false)
+    private PlaceModel place_id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "roomID", nullable = false)
-    private Room roomID;
+    @JoinColumn(name = "room_id", nullable = false)
+    private Room room_id;
 
 }

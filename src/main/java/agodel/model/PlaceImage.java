@@ -10,12 +10,12 @@ import lombok.Setter;
 @Table(name = "place_image")
 public class PlaceImage {
     @Id
-    @Column(name = "imageID", nullable = false, length = 10)
-    private String imageID;
+    @Column(name = "image_id", nullable = false, length = 10)
+    private String image_id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "placeID", nullable = false)
-    private PlaceModel placeID;
+    @JoinColumn(name = "place_id", nullable = false)
+    private PlaceModel place_id;
 
     @Column(name = "image")
     private byte[] image;

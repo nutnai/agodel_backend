@@ -20,7 +20,7 @@ public class PlaceModel {
     private String address;
 
     @OneToOne
-    @JoinColumn(name = "ownerID", referencedColumnName = "ownerID")
+    @JoinColumn(name = "owner_id", referencedColumnName = "owner_id")
     private OwnerModel owner;
 
     public PlaceModel() {

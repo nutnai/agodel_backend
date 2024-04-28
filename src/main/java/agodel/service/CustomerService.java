@@ -20,9 +20,9 @@ public class CustomerService {
 
     public String register(Map<String, Object> body,String id){
         CustomerModel customers = new CustomerModel();
-        customers.setCustomerID(id);
-        customers.setFirstName((String) body.get("first_name"));
-        customers.setLastName((String) body.get("last_name"));
+        customers.setCustomer_id(id);
+        customers.setFirstname((String) body.get("first_name"));
+        customers.setLastname((String) body.get("last_name"));
         customers.setPhone((String) body.get("phone"));
         customers.setEmail((String) body.get("email"));
         customerRepository.save(customers);
