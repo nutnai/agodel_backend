@@ -20,8 +20,13 @@ public class PlaceController{
     }
 
     @PostMapping("/create")
-    public String create(@RequestHeader("Authorization") String token, @RequestBody Map<String, Object> body){
-        return placeService.create(token, body);
+    public String create(@RequestBody Map<String, Object> body){
+        return placeService.create(body);
+    }
+
+    @PostMapping("/edit")
+    public String edit(@RequestBody Map<String, Object> body){
+        return placeService.edit(body);
     }
 
 }

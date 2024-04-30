@@ -20,6 +20,6 @@ public class PlaceRoom {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "roomID", nullable = false)
-    private Room roomID;
+    private RoomModel roomModelID;
 
 }

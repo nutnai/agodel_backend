@@ -16,12 +16,10 @@ import lombok.Setter;
 public class CustomerModel {
 
     @Id
-    private String customerID;
+    private String customer_id;
 
-    @Column(name = "firstName")
-    private String firstName;
-    @Column(name = "lastName")
-    private String lastName;
+    private String firstname;
+    private String lastname;
     private String phone;
     private String email;
 

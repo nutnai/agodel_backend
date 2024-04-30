@@ -40,7 +40,7 @@ public class Receipt {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "roomID")
-    private Room roomID;
+    private RoomModel roomModelID;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customerID")

@@ -14,13 +14,14 @@ import lombok.Setter;
 public class PlaceModel {
 
     @Id
+    @Column(name = "place_id")
     private String placeId;
 
     private String name;
     private String address;
 
     @OneToOne
-    @JoinColumn(name = "ownerID", referencedColumnName = "ownerID")
+    @JoinColumn(name = "owner_id", referencedColumnName = "owner_id")
     private OwnerModel owner;
 
     public PlaceModel() {

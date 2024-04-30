@@ -8,10 +8,9 @@ import agodel.data.UserRepository;
 import agodel.model.UserModel;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import agodel.service.UserCountService;
-import agodel.service.CustomerService;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
@@ -23,14 +22,17 @@ public class UserService {
 
     private CustomerService customerService;
 
+    private OwnerService ownerService;
+
     @PersistenceContext
     private EntityManager entityManager;
 
-    public UserService(UserRepository userRepository, UserCountService userCountService, CustomerService customerService) {
+    public UserService(UserRepository userRepository, UserCountService userCountService, CustomerService customerService, OwnerService ownerService) {
 
         this.userRepository = userRepository;
         this.userCountService = userCountService;
         this.customerService = customerService;
+        this.ownerService = ownerService;
     }
 
     public List<UserModel> getUser() {
@@ -50,13 +52,24 @@ public class UserService {
             return "exits";
         }
         String type = (String) body.get("type");
-        String id = type.equals("customer") ? userCountService.getCountCustomer() : userCountService.getCountOwner();
+        String id;
+        if(type.equals("customer")){
+            id =  userCountService.getCountCustomer();
+        }
+        else{
+            id =  userCountService.getCountOwner();
+        }
         UserModel user = new UserModel();
         user.setId(id);
         user.setUsername((String) body.get("username"));
         user.setPassword((String) body.get("password"));
         userRepository.save(user);
-        customerService.register(body,id);
+        if(type.equals("customer")){
+            customerService.register(body,id);
+        }
+        else{
+            ownerService.register(body,id);
+        }
         return "good";
     }
 

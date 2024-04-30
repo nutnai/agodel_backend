@@ -5,10 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import agodel.model.CustomerModel;
-import agodel.model.UserMock;
 import agodel.model.UserModel;
-import agodel.service.UserMockService;
 import agodel.service.UserService;
 import agodel.service.CustomerService;
 import org.springframework.stereotype.Controller;
@@ -18,27 +15,20 @@ import org.springframework.web.bind.annotation.*;
 @Controller
 @RequestMapping("/user")
 public class UserController {
-    private UserMockService userMockService;
+
     private UserService userService;
 
     private CustomerService customerService;
 
-    public UserController(UserMockService userMockService, UserService userService,CustomerService customerService) {
-        this.userMockService = userMockService;
+    public UserController(UserService userService,CustomerService customerService) {
+
         this.userService = userService;
         this.customerService = customerService;
     }
 
     @GetMapping
-    public Map<String, String> sayHello() {
-        HashMap<String, String> map = new HashMap<>();
-        map.put("key", "GET");
-        return map;
-    }
-
-    @GetMapping("/mock")
-    public List<UserMock> getMockUser() {
-        return userMockService.getUserMock();
+    public String sayHello() {
+        return "hello kuy";
     }
 
     @PostMapping

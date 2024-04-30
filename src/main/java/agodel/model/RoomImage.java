@@ -15,7 +15,7 @@ public class RoomImage {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "roomID", nullable = false)
-    private Room roomID;
+    private RoomModel roomModelID;
 
     @Column(name = "image")
     private byte[] image;

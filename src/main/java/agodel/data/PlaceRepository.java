@@ -8,5 +8,6 @@ import java.util.List;
 
 @Repository
 public interface PlaceRepository extends JpaRepository<PlaceModel, String> {
+    public PlaceModel findTopByOrderByPlaceIdDesc();
 
 }
