@@ -69,7 +69,7 @@ CREATE TABLE `room_image`
 );
 
 # CREATE TABLE `paymentcustomer` (
-#   `paymentOwner_id` varchar(10) NOT NULL,
+#   `payment_owner_id` varchar(10) NOT NULL,
 #   `customer_id` varchar(10) DEFAULT NULL,
 #   PRIMARY KEY (`paymentOwner_id`),
 #   KEY `customer_id` (`customer_id`),
@@ -77,7 +77,7 @@ CREATE TABLE `room_image`
 # ) ;
 
 # CREATE TABLE `paymentowner` (
-#   `paymentOwner_id` varchar(10) NOT NULL,
+#   `payment_owner_id` varchar(10) NOT NULL,
 #   `owner_id` varchar(10) DEFAULT NULL,
 #   PRIMARY KEY (`paymentOwner_id`),
 #   KEY `owner_id` (`owner_id`),
@@ -89,11 +89,11 @@ CREATE TABLE `room_image`
 #   `placeRoom_id` varchar(10) DEFAULT NULL,
 #   `resortRoom_id` varchar(10) DEFAULT NULL,
 #   `customer_id` varchar(10) DEFAULT NULL,
-#   `reportType` tinytext,
-#   `dateStart` datetime DEFAULT NULL,
-#   `dateEnd` datetime DEFAULT NULL,
+#   `report_type` tinytext,
+#   `date_start` datetime DEFAULT NULL,
+#   `date_end` datetime DEFAULT NULL,
 #   `price` smallint DEFAULT NULL,
-#   `numberOfDay` smallint DEFAULT NULL,
+#   `number_of_day` smallint DEFAULT NULL,
 #   PRIMARY KEY (`report_id`),
 #   KEY `hotelRoom_id` (`hotelRoom_id`),
 #   KEY `customer_id` (`customer_id`),
@@ -108,11 +108,11 @@ CREATE TABLE `receipt`
 (
     `receipt_id`    varchar(10) NOT NULL,
     `status`       tinytext,
-    `dateCreate`   datetime    DEFAULT NULL,
-    `datePay`      datetime    DEFAULT NULL,
-    `dateCheckIn`  datetime    DEFAULT NULL,
-    `dateCheckOut` datetime    DEFAULT NULL,
-    `dayCount`     smallint    DEFAULT NULL,
+    `date_create`   datetime    DEFAULT NULL,
+    `date_pay`      datetime    DEFAULT NULL,
+    `date_check_in`  datetime    DEFAULT NULL,
+    `date_check_out` datetime    DEFAULT NULL,
+    `day_count`     smallint    DEFAULT NULL,
     `price`        smallint    DEFAULT NULL,
     `room_id`       varchar(10) DEFAULT NULL,
     `customer_id`   varchar(10) DEFAULT NULL,

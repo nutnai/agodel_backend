@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.Instant;
+import java.util.Date;
 
 @Getter
 @Setter
@@ -13,37 +14,37 @@ import java.time.Instant;
 public class Receipt {
 
     @Id
-    @Column(name = "receiptID", length = 10)
-    private String receiptID;
+    @Column(name = "receipt_id", length = 10)
+    private String receiptId;
 
     @Lob
     @Column(name = "status")
     private String status;
 
-    @Column(name = "dateCreate")
-    private Instant dateCreate;
+    @Column(name = "date_create")
+    private String dateCreate;
 
-    @Column(name = "datePay")
-    private Instant datePay;
+    @Column(name = "date_pay")
+    private String datePay;
 
-    @Column(name = "dateCheckIn")
-    private Instant dateCheckIn;
+    @Column(name = "date_check_in")
+    private String dateCheckIn;
 
-    @Column(name = "dateCheckOut")
-    private Instant dateCheckOut;
+    @Column(name = "date_check_out")
+    private String dateCheckOut;
 
-    @Column(name = "dayCount")
-    private Short dayCount;
+    @Column(name = "day_count")
+    private int dayCount;
 
     @Column(name = "price")
-    private Short price;
+    private int price;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "roomID")
-    private RoomModel roomModelID;
+    @JoinColumn(name = "room_id", referencedColumnName = "room_id")
+    private RoomModel roomModelId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "customerID")
-    private CustomerModel customerID;
+    @JoinColumn(name = "customer_id",referencedColumnName = "customer_id")
+    private CustomerModel customerId;
 
 }

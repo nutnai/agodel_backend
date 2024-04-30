@@ -19,7 +19,7 @@ public class CustomerService {
 
     public String register(Map<String, Object> body,String id){
         CustomerModel customers = new CustomerModel();
-        customers.setCustomer_id(id);
+        customers.setCustomerId(id);
         customers.setFirstname((String) body.get("firstname"));
         customers.setLastname((String) body.get("lastname"));
         customers.setPhone((String) body.get("phone"));

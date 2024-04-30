@@ -3,6 +3,8 @@ package agodel.controller;
 import java.util.Map;
 
 import agodel.data.PlaceRepository;
+import agodel.model.PlaceModel;
+import agodel.model.Receipt;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import agodel.service.PlaceService;
@@ -28,5 +30,17 @@ public class PlaceController{
     public String edit(@RequestBody Map<String, Object> body){
         return placeService.edit(body);
     }
+
+    @PostMapping("/detail")
+    public PlaceModel showDetail(@RequestBody Map<String, Object> body){
+        return placeService.showDetail(body);
+    }
+
+    @PostMapping("/rent")
+    public Receipt rent(@RequestBody Map<String, Object> body){
+        return placeService.rentRoom(body);
+    }
+
+
 
 }

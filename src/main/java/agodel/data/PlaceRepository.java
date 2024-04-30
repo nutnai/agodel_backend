@@ -10,4 +10,8 @@ import java.util.List;
 public interface PlaceRepository extends JpaRepository<PlaceModel, String> {
     public PlaceModel findTopByOrderByPlaceIdDesc();
 
+    public List<PlaceModel> findByAddressContains(String temp);
+
+    public PlaceModel findByPlaceId(String placeId);
+
 }

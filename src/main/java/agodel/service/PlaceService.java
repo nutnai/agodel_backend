@@ -2,12 +2,14 @@ package agodel.service;
 
 import agodel.data.OwnerRepository;
 import agodel.model.PlaceModel;
+import agodel.model.Receipt;
 import org.springframework.stereotype.Service;
 import agodel.data.PlaceRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -16,12 +18,15 @@ public class PlaceService {
     private PlaceRepository placeRepository;
     private OwnerRepository OwnerRepository;
 
+    private RoomService roomService;
+
     @PersistenceContext
     private EntityManager entityManager;
 
-    public PlaceService(PlaceRepository placeRepository, OwnerRepository OwnerRepository) {
+    public PlaceService(PlaceRepository placeRepository, OwnerRepository OwnerRepository, RoomService roomService) {
         this.placeRepository = placeRepository;
         this.OwnerRepository = OwnerRepository;
+        this.roomService = roomService;
     }
 
     public String create(Map<String, Object> body) {
@@ -50,5 +55,19 @@ public class PlaceService {
         } catch (Exception e){
             return "error!!!";
         }
+    }
+
+    public List<PlaceModel> search(Map<String, Object> body){
+        List<PlaceModel> placeAddress = placeRepository.findByAddressContains((String) body.get("address"));
+        return placeAddress;
+    }
+
+    public PlaceModel showDetail(Map<String, Object> body){
+        return placeRepository.findByPlaceId((String) body.get("placeId"));
+    }
+
+    public Receipt rentRoom(Map<String, Object> body){
+        String customerId = (String) body.get("customerId");
+        return roomService.calPrice(body,customerId);
     }
 }

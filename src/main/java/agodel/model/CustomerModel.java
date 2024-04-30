@@ -16,7 +16,8 @@ import lombok.Setter;
 public class CustomerModel {
 
     @Id
-    private String customer_id;
+    @Column(name = "customer_id")
+    private String customerId;
 
     private String firstname;
     private String lastname;

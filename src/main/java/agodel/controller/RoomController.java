@@ -3,6 +3,7 @@ package agodel.controller;
 import java.util.Map;
 
 import agodel.data.RoomRepository;
+import agodel.model.RoomModel;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import agodel.service.RoomService;
@@ -22,6 +23,11 @@ public class RoomController{
     @PostMapping("/create")
     public String create(@RequestBody Map<String, Object> body){
         return roomService.create(body);
+    }
+
+    @PostMapping("/detail")
+    public RoomModel showDetail(@RequestBody Map<String, Object> body){
+        return roomService.showDetail(body);
     }
 
 }
