@@ -26,6 +26,8 @@ public class RoomModel {
 
     @Column(name = "number_people")
     private int numberPeople;
+
+    @Column(name = "price")
     private int price;
 
     public RoomModel() {

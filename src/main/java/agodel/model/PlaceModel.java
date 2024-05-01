@@ -18,6 +18,8 @@ public class PlaceModel {
     private String placeId;
 
     private String name;
+
+    @Column(name = "address")
     private String address;
 
     @OneToOne

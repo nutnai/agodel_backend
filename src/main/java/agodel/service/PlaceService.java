@@ -70,4 +70,9 @@ public class PlaceService {
         String customerId = (String) body.get("customerId");
         return roomService.calPrice(body,customerId);
     }
+
+//    public List<PlaceModel> testSearch(Map<String, Object> body){
+//        return placeRepository.findIdsByConditions((String) body.get("address"), (Integer) body.get("numberPeople"),(Integer) body.get("upperPrice"),(Integer) body.get("lowerPrice"));
+//    }
+
 }

@@ -2,6 +2,8 @@ package agodel.data;
 
 import agodel.model.PlaceModel;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -13,5 +15,8 @@ public interface PlaceRepository extends JpaRepository<PlaceModel, String> {
     public List<PlaceModel> findByAddressContains(String temp);
 
     public PlaceModel findByPlaceId(String placeId);
+
+//    @Query("SELECT placeModel FROM PlaceModel placeModel JOIN RoomModel roomModel ON placeModel.placeId = roomModel.place WHERE place.address LIKE %:searchString% AND roomModel.numberPeople > :yourNumber AND roomModel.price BETWEEN :lowerPrice AND :upperPrice")
+//    List<PlaceModel> findIdsByConditions(@Param("searchString") String searchString, @Param("yourNumber") int yourNumber, @Param("lowerPrice") int lowerPrice, @Param("upperPrice") int upperPrice);
 
 }

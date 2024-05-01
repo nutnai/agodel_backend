@@ -112,4 +112,16 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
+
+    @PostMapping("/editCustomer")
+    public String editCustomer(@RequestBody Map<String, Object> body) {
+
+        return customerService.edit(body);
+    }
+
+    @PostMapping("/editOwner")
+    public String editOwner(@RequestBody Map<String, Object> body) {
+
+        return ownerService.edit(body);
+    }
 }

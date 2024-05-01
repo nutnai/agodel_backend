@@ -2,6 +2,7 @@ package agodel.service;
 
 import agodel.data.CustomerRepository;
 import agodel.data.RoomRepository;
+import agodel.model.CustomerModel;
 import agodel.model.Receipt;
 import org.springframework.stereotype.Service;
 import agodel.data.ReceiptRepository;
@@ -11,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -23,10 +25,14 @@ public class ReceiptService {
     private CustomerRepository customerRepository;
 
 
-    public ReceiptService(ReceiptRepository receiptRepository, RoomRepository roomRepository, CustomerRepository customerRepository) {
+    @PersistenceContext
+    private EntityManager entityManager;
+
+    public ReceiptService(ReceiptRepository receiptRepository, RoomRepository roomRepository, CustomerRepository customerRepository){
         this.receiptRepository = receiptRepository;
         this.roomRepository = roomRepository;
         this.customerRepository = customerRepository;
+
     }
 
     public Receipt create(Map<String, Object> body,int price, String roomId, String customerId){
@@ -45,4 +51,36 @@ public class ReceiptService {
         return receipt;
     }
 
+    public String customerCancleRent(Map<String, Object> body){
+        Receipt receipt = receiptRepository.findByReceiptId((String) body.get("receiptId"));
+        receipt.setStatus("Cancle!!");
+        entityManager.merge(receipt);
+        return "cancle success";
+    }
+
+    public String paidRent(Map<String, Object> body){
+        Receipt receipt = receiptRepository.findByReceiptId((String) body.get("receiptId"));
+        receipt.setStatus("Paid");
+        receipt.setDatePay((String) body.get("datePay"));
+        entityManager.merge(receipt);
+        return "Wait for result approved";
+    }
+
+    public String notApprove(Map<String, Object> body){
+        Receipt receipt = receiptRepository.findByReceiptId((String) body.get("receiptId"));
+        receipt.setStatus("Chargeback");
+        entityManager.merge(receipt);
+        return "Chargeback";
+    }
+
+    public String approveRent(Map<String, Object> body){
+        Receipt receipt = receiptRepository.findByReceiptId((String) body.get("receiptId"));
+        receipt.setStatus("Rented");
+        entityManager.merge(receipt);
+        return "Rented";
+    }
+
+    public List<Receipt> showDetail(Map<String, Object> body, CustomerModel customerModel){
+        return receiptRepository.findByCustomerId(customerModel);
+    }
 }
