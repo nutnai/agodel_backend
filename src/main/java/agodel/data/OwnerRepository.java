@@ -9,4 +9,6 @@ import java.util.List;
 @Repository
 public interface OwnerRepository extends JpaRepository<OwnerModel, String> {
 
+    public OwnerModel findByOwnerId(String ownerId);
+
 }

@@ -5,6 +5,8 @@ import java.util.Map;
 
 import agodel.data.CustomerRepository;
 import agodel.model.CustomerModel;
+import agodel.model.PlaceModel;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +28,10 @@ public class CustomerService {
         customers.setEmail((String) body.get("email"));
         customerRepository.save(customers);
         return "good";
+    }
+
+    public CustomerModel showDetail(Map<String, Object> body){
+        return customerRepository.findByCustomerId((String) body.get("customerId"));
     }
 
     public List<CustomerModel> getUser() {

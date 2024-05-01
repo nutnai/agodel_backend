@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import agodel.data.UserRepository;
+import agodel.model.CustomerModel;
 import agodel.model.UserModel;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -72,17 +73,19 @@ public class UserService {
         return "good";
     }
 
-    public String login(Map<String, Object> body) {
+    public String login(Map<String, Object> body) throws Exception {
         String username = (String) body.get("username");
         List<UserModel> users = userRepository.findByUsername(username);
         if (users.isEmpty()) {
-            return "don't have this username";
+            throw new Exception("user not found");
+            
+
         }
         String password = users.get(0).getPassword();
         if (((String) body.get("password")).equals(password)) {
             return users.get(0).getId();
         }
-        return "wrong password";
+        throw new Exception("password not match");
     }
 
     public String resetPassword(Map<String, Object> body) {
@@ -92,5 +95,10 @@ public class UserService {
         entityManager.merge(userModel);
         return "password changed";
 
+    }
+
+    public UserModel showDetail(Map<String, Object> body){
+        String id = (String) body.get("id");
+        return userRepository.findById(id).get();
     }
 }

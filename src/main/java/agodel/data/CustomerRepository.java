@@ -9,4 +9,6 @@ import java.util.List;
 @Repository
 public interface CustomerRepository extends JpaRepository<CustomerModel, String> {
 
+    public CustomerModel findByCustomerId(String customerId);
+
 }

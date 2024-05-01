@@ -5,11 +5,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import agodel.model.CustomerModel;
 import agodel.model.UserModel;
+import agodel.model.OwnerModel;
 import agodel.service.UserService;
 import agodel.service.CustomerService;
+import agodel.service.OwnerService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 @RestController
 @Controller
@@ -20,10 +25,13 @@ public class UserController {
 
     private CustomerService customerService;
 
-    public UserController(UserService userService,CustomerService customerService) {
+    private OwnerService ownerService;
+
+    public UserController(UserService userService,CustomerService customerService, OwnerService ownerService) {
 
         this.userService = userService;
         this.customerService = customerService;
+        this.ownerService = ownerService;
     }
 
     @GetMapping
@@ -60,15 +68,48 @@ public class UserController {
 //        return customerService.register(body);
 //    }
 
-    @PostMapping("/login")
-    public String login(@RequestBody Map<String, Object> body) {
-
-        return userService.login(body);
-    }
-
     @PostMapping("/resetPassword")
     public String resetPassword(@RequestBody Map<String, Object> body) {
 
         return userService.resetPassword(body);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<String> testLogin(@RequestBody Map<String, Object> body) {
+        try {
+            String id = userService.login(body);
+            return ResponseEntity.ok().body(id);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+    @PostMapping("/getCustomer")
+    public ResponseEntity<CustomerModel> testCustomer(@RequestBody Map<String, Object> body) {
+        try {
+            CustomerModel customer = customerService.showDetail(body);
+            return ResponseEntity.ok().body(customer);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
+    @PostMapping("/getUserDetail")
+    public ResponseEntity<UserModel> getUserDetail(@RequestBody Map<String, Object> body) {
+        try {
+            UserModel user = userService.showDetail(body);
+            return ResponseEntity.ok().body(user);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
+    @PostMapping("/getOwner")
+    public ResponseEntity<OwnerModel> getOwner(@RequestBody Map<String, Object> body) {
+        try {
+            OwnerModel owner = ownerService.showDetail(body);
+            return ResponseEntity.ok().body(owner);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
     }
 }
