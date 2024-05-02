@@ -16,7 +16,7 @@ public interface PlaceRepository extends JpaRepository<PlaceModel, String> {
 
     public PlaceModel findByPlaceId(String placeId);
 
-//    @Query("SELECT placeModel FROM PlaceModel placeModel JOIN RoomModel roomModel ON placeModel.placeId = roomModel.place WHERE place.address LIKE %:searchString% AND roomModel.numberPeople > :yourNumber AND roomModel.price BETWEEN :lowerPrice AND :upperPrice")
-//    List<PlaceModel> findIdsByConditions(@Param("searchString") String searchString, @Param("yourNumber") int yourNumber, @Param("lowerPrice") int lowerPrice, @Param("upperPrice") int upperPrice);
+    @Query("SELECT placeModel FROM PlaceModel placeModel JOIN RoomModel roomModel ON placeModel = roomModel.place WHERE placeModel.address LIKE %:searchString% AND roomModel.numberPeople > :yourNumber AND roomModel.price BETWEEN :lowerPrice AND :upperPrice")
+    List<PlaceModel> findPlaceBySearchCriteria(@Param("searchString") String searchString, @Param("yourNumber") int yourNumber, @Param("lowerPrice") int lowerPrice, @Param("upperPrice") int upperPrice);
 
 }

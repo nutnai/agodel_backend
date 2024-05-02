@@ -1,5 +1,6 @@
 package agodel.controller;
 
+import java.util.List;
 import java.util.Map;
 
 import agodel.data.PlaceRepository;
@@ -39,6 +40,16 @@ public class PlaceController{
     @PostMapping("/rent")
     public Receipt rent(@RequestBody Map<String, Object> body){
         return placeService.rentRoom(body);
+    }
+
+    @PostMapping("/search")
+    public List<PlaceModel> search(@RequestBody Map<String, Object> body){
+        return placeService.search(body);
+    }
+
+    @PostMapping("/testSearch")
+    public List<PlaceModel> testSearch(@RequestBody Map<String, Object> body){
+        return placeService.testSearch(body);
     }
 
 
