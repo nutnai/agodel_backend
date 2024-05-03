@@ -42,7 +42,11 @@ public class RoomService {
         RoomModel lastRec = roomRepository.findTopByOrderByRoomIdDesc();
         int currentId = Integer.parseInt(lastRec.getRoomId())+1;
         room.setRoomId(String.valueOf(currentId));
-        room.setPlace(placeRepository.getReferenceById((String) body.get("place")));
+        String ownerId = (String) body.get("ownerId");
+        PlaceModel placeModel = placeRepository.findByOwnerOwnerId(ownerId);
+        String placeId = placeModel.getPlaceId();
+        room.setPlace(placeRepository.findByPlaceId(placeId));
+        room.setOwner(ownerRepository.findByOwnerId(ownerId));
         room.setBed((Integer) body.get("bed"));
         room.setFacility((String) body.get("facility"));
         room.setNumberPeople((Integer) body.get("people"));
@@ -54,20 +58,21 @@ public class RoomService {
 
     public String edit(Map<String, Object> body){
         try{
-            OwnerModel owner = ownerRepository.findByOwnerId((String) body.get("ownerId"));
-            RoomModel room = roomRepository.findByOwnerOwnerId(owner);
-            PlaceModel placeModel = placeRepository.findByOwnerOwnerId(owner);
-            placeModel.setAddress((String) body.get("newAddress"));
-            placeModel.setName((String) body.get("newName"));
-            placeModel.setStatus((String) body.get("newStatus"));
-            entityManager.merge(placeModel);
+            String ownerId = (String) body.get("ownerId");
+            RoomModel room = roomRepository.findByOwnerOwnerId(ownerId);
+            room.setFacility((String) body.get("newFacility"));
+            room.setBed((Integer) body.get("newBed"));
+            room.setStatus((String) body.get("newStatus"));
+            room.setPrice((Integer) body.get("newPrice"));
+            room.setNumberPeople((Integer) body.get("newNumber"));
+            entityManager.merge(room);
             return "edit success!";
         } catch (Exception e){
             return "error!!!";
         }
     }
     public RoomModel showDetail(Map<String, Object> body){
-        return roomRepository.findByRoomId((String) body.get("roomId"));
+        return roomRepository.findByOwnerOwnerId((String) body.get("ownerId"));
     }
 
 //    public List<PlaceModel> search(List<PlaceModel> place,int num) {

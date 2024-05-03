@@ -59,6 +59,19 @@ public class RoomController{
         }
     }
 
+    @PostMapping("/edit")
+    public ResponseEntity<Map<String, Object>> edit(@RequestBody Map<String, Object> body){
+        try {
+            String room = roomService.edit(body);
+            Map<String, Object> response = new HashMap<>();
+            response.put("room", room);
+            return ResponseEntity.ok(response);
+        }
+        catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
     @PostMapping("/cancle")
     public ResponseEntity<Map<String, Object>> cancle(@RequestBody Map<String, Object> body){
         try {

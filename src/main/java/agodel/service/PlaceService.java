@@ -17,20 +17,20 @@ import java.util.Map;
 @Transactional
 public class PlaceService {
     private PlaceRepository placeRepository;
-    private OwnerRepository OwnerRepository;
+    private OwnerRepository ownerRepository;
 
     private RoomService roomService;
 
     @PersistenceContext
     private EntityManager entityManager;
 
-    public PlaceService(PlaceRepository placeRepository, OwnerRepository OwnerRepository, RoomService roomService) {
+    public PlaceService(PlaceRepository placeRepository, OwnerRepository ownerRepository, RoomService roomService) {
         this.placeRepository = placeRepository;
-        this.OwnerRepository = OwnerRepository;
+        this.ownerRepository = ownerRepository;
         this.roomService = roomService;
     }
 
-    public String create(Map<String, Object> body,String id) {
+    public String create(Map<String, Object> body,String id, OwnerModel ownerModel) {
         try {
             PlaceModel place = new PlaceModel();
             PlaceModel lastRec = placeRepository.findTopByOrderByPlaceIdDesc();
@@ -38,7 +38,7 @@ public class PlaceService {
             place.setPlaceId(String.valueOf(currentId));
             place.setName("Enter name");
             place.setAddress("Enter address");
-            place.setOwner(OwnerRepository.getReferenceById(id));
+            place.setOwner(ownerModel);
             place.setStatus("Private");
             placeRepository.save(place);
             return "Create place success";
@@ -50,8 +50,8 @@ public class PlaceService {
     public String edit(Map<String, Object> body){
         try{
             String ownerId = (String) body.get("ownerId");
-            OwnerModel owner = OwnerRepository.findByOwnerId(ownerId);
-            PlaceModel placeModel = placeRepository.findByOwnerOwnerId(owner);
+            OwnerModel owner = ownerRepository.findByOwnerId(ownerId);
+            PlaceModel placeModel = placeRepository.findByOwnerOwnerId(ownerId);
             placeModel.setAddress((String) body.get("newAddress"));
             placeModel.setName((String) body.get("newName"));
             placeModel.setStatus((String) body.get("newStatus"));
@@ -68,7 +68,8 @@ public class PlaceService {
     }
 
     public PlaceModel showDetail(Map<String, Object> body){
-        return placeRepository.findByPlaceId((String) body.get("placeId"));
+        String ownerId = (String) body.get("ownerId");
+        return placeRepository.findByOwnerOwnerId(ownerId);
     }
 
     public Receipt rentRoom(Map<String, Object> body){

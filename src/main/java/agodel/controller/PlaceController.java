@@ -44,7 +44,7 @@ public class PlaceController{
     }
 
     @PostMapping("/detail")
-    public ResponseEntity<Map<String, Object>> showDetail(@RequestBody Map<String, Object> body){
+    public ResponseEntity<Map<String, Object>> detail(@RequestBody Map<String, Object> body){
         try {
             PlaceModel place = placeService.showDetail(body);
             Map<String, Object> response = new HashMap<>();

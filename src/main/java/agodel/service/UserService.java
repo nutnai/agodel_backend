@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import agodel.data.UserRepository;
+import agodel.data.OwnerRepository;
 import agodel.model.CustomerModel;
 import agodel.model.OwnerModel;
 import agodel.model.UserModel;
@@ -19,6 +20,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
     private UserRepository userRepository;
 
+    private OwnerRepository ownerRepository;
+
     private UserCountService userCountService;
 
     private CustomerService customerService;
@@ -30,13 +33,14 @@ public class UserService {
     @PersistenceContext
     private EntityManager entityManager;
 
-    public UserService(UserRepository userRepository, UserCountService userCountService, CustomerService customerService, OwnerService ownerService,PlaceService placeService) {
+    public UserService(UserRepository userRepository, UserCountService userCountService, CustomerService customerService, OwnerService ownerService,PlaceService placeService,OwnerRepository ownerRepository) {
 
         this.userRepository = userRepository;
         this.userCountService = userCountService;
         this.customerService = customerService;
         this.ownerService = ownerService;
         this.placeService = placeService;
+        this.ownerRepository = ownerRepository;
     }
 
     public List<UserModel> getUser() {
@@ -70,11 +74,11 @@ public class UserService {
         userRepository.save(user);
         if(type.equals("customer")){
             customerService.register(body,id);
-            return id;
         }
         else{
             ownerService.register(body,id);
-            placeService.create(body,id);
+            OwnerModel ownerModel = ownerRepository.findByOwnerId(id);
+            placeService.create(body,id,ownerModel);
         }
         return id;
     }
