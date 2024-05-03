@@ -59,8 +59,15 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public String  register(@RequestBody Map<String, Object> body){
-        return userService.register(body);
+    public ResponseEntity  register(@RequestBody Map<String, Object> body){
+        try {
+            String id = userService.register(body);
+            Map<String, Object> response = new HashMap<>();
+            response.put("id", id);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
     }
 
 //    @PostMapping("/customer")
@@ -75,19 +82,23 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> testLogin(@RequestBody Map<String, Object> body) {
+    public ResponseEntity testLogin(@RequestBody Map<String, Object> body) {
         try {
             String id = userService.login(body);
-            return ResponseEntity.ok().body(id);
+            Map<String, Object> response = new HashMap<>();
+            response.put("id", id);
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
     @PostMapping("/getCustomer")
-    public ResponseEntity<CustomerModel> testCustomer(@RequestBody Map<String, Object> body) {
+    public ResponseEntity<Map<String, Object>> getCustomer(@RequestBody Map<String, Object> body) {
         try {
             CustomerModel customer = customerService.showDetail(body);
-            return ResponseEntity.ok().body(customer);
+            Map<String, Object> response = new HashMap<>();
+            response.put("customer", customer);
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }

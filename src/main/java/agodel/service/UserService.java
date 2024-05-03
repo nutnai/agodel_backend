@@ -6,6 +6,7 @@ import java.util.Objects;
 
 import agodel.data.UserRepository;
 import agodel.model.CustomerModel;
+import agodel.model.OwnerModel;
 import agodel.model.UserModel;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -70,7 +71,7 @@ public class UserService {
         else{
             ownerService.register(body,id);
         }
-        return "good";
+        return id;
     }
 
     public String login(Map<String, Object> body) throws Exception {
