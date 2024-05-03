@@ -1,6 +1,8 @@
 package agodel.service;
 
+import agodel.data.OwnerRepository;
 import agodel.data.PlaceRepository;
+import agodel.model.OwnerModel;
 import agodel.model.PlaceModel;
 import agodel.model.Receipt;
 import agodel.model.RoomModel;
@@ -22,11 +24,17 @@ public class RoomService {
 
     private ReceiptService receiptService;
 
+    private OwnerRepository ownerRepository;
 
-    public RoomService(RoomRepository roomRepository, PlaceRepository placeRepository, ReceiptService receiptService) {
+    @PersistenceContext
+    private EntityManager entityManager;
+
+
+    public RoomService(RoomRepository roomRepository, PlaceRepository placeRepository, ReceiptService receiptService, OwnerRepository ownerRepository) {
         this.roomRepository = roomRepository;
         this.placeRepository = placeRepository;
         this.receiptService = receiptService;
+        this.ownerRepository = ownerRepository;
     }
 
     public String create(Map<String, Object> body) {
@@ -39,10 +47,25 @@ public class RoomService {
         room.setFacility((String) body.get("facility"));
         room.setNumberPeople((Integer) body.get("people"));
         room.setPrice((Integer) body.get("price"));
+        room.setStatus((String) body.get("status"));
         roomRepository.save(room);
         return "Room created successfully";
     }
 
+    public String edit(Map<String, Object> body){
+        try{
+            OwnerModel owner = ownerRepository.findByOwnerId((String) body.get("ownerId"));
+            RoomModel room = roomRepository.findByOwnerOwnerId(owner);
+            PlaceModel placeModel = placeRepository.findByOwnerOwnerId(owner);
+            placeModel.setAddress((String) body.get("newAddress"));
+            placeModel.setName((String) body.get("newName"));
+            placeModel.setStatus((String) body.get("newStatus"));
+            entityManager.merge(placeModel);
+            return "edit success!";
+        } catch (Exception e){
+            return "error!!!";
+        }
+    }
     public RoomModel showDetail(Map<String, Object> body){
         return roomRepository.findByRoomId((String) body.get("roomId"));
     }
@@ -52,7 +75,8 @@ public class RoomService {
 
     public Receipt calPrice(Map<String, Object> body, String customerId){
         RoomModel thisRoom = roomRepository.findByRoomId((String) body.get("roomId"));
-        int price = thisRoom.getPrice();
+        int dayCount = (Integer) body.get("dayCount");
+        int price = thisRoom.getPrice()*dayCount;
         return receiptService.create(body,price, (String) body.get("roomId"),customerId);
     }
 }

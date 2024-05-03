@@ -105,20 +105,24 @@ public class UserController {
     }
 
     @PostMapping("/getUserDetail")
-    public ResponseEntity<UserModel> getUserDetail(@RequestBody Map<String, Object> body) {
+    public ResponseEntity<Map<String, Object>> getUserDetail(@RequestBody Map<String, Object> body) {
         try {
             UserModel user = userService.showDetail(body);
-            return ResponseEntity.ok().body(user);
+            Map<String, Object> response = new HashMap<>();
+            response.put("user", user);
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 
     @PostMapping("/getOwner")
-    public ResponseEntity<OwnerModel> getOwner(@RequestBody Map<String, Object> body) {
+    public ResponseEntity<Map<String, Object>> getOwner(@RequestBody Map<String, Object> body) {
         try {
             OwnerModel owner = ownerService.showDetail(body);
-            return ResponseEntity.ok().body(owner);
+            Map<String, Object> response = new HashMap<>();
+            response.put("owner", owner);
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }

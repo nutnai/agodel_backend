@@ -24,6 +24,7 @@ CREATE TABLE `place`
     `owner_id` varchar(10) DEFAULT NULL,
     `name`    tinytext,
     `address` tinytext,
+    `status` varchar(25),
     PRIMARY KEY (`place_id`),
     KEY `owner_id` (`owner_id`),
     CONSTRAINT `place_ibfk_1` FOREIGN KEY (`owner_id`) REFERENCES `owner` (`owner_id`)
@@ -37,6 +38,7 @@ CREATE TABLE `room`
     `facility`     tinytext,
     `number_people` smallint    DEFAULT NULL,
     `price`        smallint    DEFAULT NULL,
+    `status` varchar(25),
     PRIMARY KEY (`room_id`),
     CONSTRAINT `room_ibfk_1` FOREIGN KEY (`place_id`) REFERENCES `place` (`place_id`)
 );

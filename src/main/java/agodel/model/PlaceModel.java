@@ -26,6 +26,8 @@ public class PlaceModel {
     @JoinColumn(name = "owner_id", referencedColumnName = "owner_id")
     private OwnerModel owner;
 
+    private String status;
+
     public PlaceModel() {
     }
 }

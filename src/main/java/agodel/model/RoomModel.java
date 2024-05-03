@@ -30,6 +30,12 @@ public class RoomModel {
     @Column(name = "price")
     private int price;
 
+    private String status;
+
+    @OneToOne
+    @JoinColumn(name = "owner_id", referencedColumnName = "owner_id")
+    private OwnerModel owner;
+
     public RoomModel() {
     }
 }

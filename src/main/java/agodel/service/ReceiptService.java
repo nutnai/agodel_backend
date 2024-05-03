@@ -55,7 +55,7 @@ public class ReceiptService {
         Receipt receipt = receiptRepository.findByReceiptId((String) body.get("receiptId"));
         receipt.setStatus("Cancle!!");
         entityManager.merge(receipt);
-        return "cancle success";
+        return "Cancled!!";
     }
 
     public String paidRent(Map<String, Object> body){
@@ -63,7 +63,7 @@ public class ReceiptService {
         receipt.setStatus("Paid");
         receipt.setDatePay((String) body.get("datePay"));
         entityManager.merge(receipt);
-        return "Wait for result approved";
+        return "Not approve";
     }
 
     public String notApprove(Map<String, Object> body){

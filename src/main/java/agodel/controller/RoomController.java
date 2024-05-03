@@ -1,5 +1,6 @@
 package agodel.controller;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -7,6 +8,8 @@ import agodel.data.RoomRepository;
 import agodel.model.Receipt;
 import agodel.model.RoomModel;
 import agodel.service.CustomerService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import agodel.service.RoomService;
@@ -31,38 +34,95 @@ public class RoomController{
     }
 
     @PostMapping("/create")
-    public String create(@RequestBody Map<String, Object> body){
-        return roomService.create(body);
+    public ResponseEntity<Map<String, Object>> create(@RequestBody Map<String, Object> body){
+        try {
+            String result = roomService.create(body);
+            Map<String, Object> response = new HashMap<>();
+            response.put("message", result);
+            return ResponseEntity.ok(response);
+        }
+        catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
     }
 
     @PostMapping("/detail")
-    public RoomModel showDetail(@RequestBody Map<String, Object> body){
-        return roomService.showDetail(body);
+    public ResponseEntity<Map<String, Object>> showDetail(@RequestBody Map<String, Object> body){
+        try {
+            RoomModel room = roomService.showDetail(body);
+            Map<String, Object> response = new HashMap<>();
+            response.put("room", room);
+            return ResponseEntity.ok(response);
+        }
+        catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
     }
 
     @PostMapping("/cancle")
-    public String cancle(@RequestBody Map<String, Object> body){
-        return receiptService.customerCancleRent(body);
+    public ResponseEntity<Map<String, Object>> cancle(@RequestBody Map<String, Object> body){
+        try {
+            String result = receiptService.customerCancleRent(body);
+            Map<String, Object> response = new HashMap<>();
+            response.put("message", result);
+            return ResponseEntity.ok(response);
+        }
+        catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
     }
 
     @PostMapping("/paid")
-    public String paid(@RequestBody Map<String, Object> body){
-        return receiptService.paidRent(body);
+    public ResponseEntity<Map<String, Object>> paid(@RequestBody Map<String, Object> body){
+        try {
+            String result = receiptService.paidRent(body);
+            Map<String, Object> response = new HashMap<>();
+            response.put("message", result);
+            return ResponseEntity.ok(response);
+        }
+        catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
     }
 
     @PostMapping("/notApprove")
-    public String notApprove(@RequestBody Map<String, Object> body){
-        return receiptService.notApprove(body);
+    public ResponseEntity<Map<String, Object>> notApprove(@RequestBody Map<String, Object> body){
+        try {
+            String result = receiptService.notApprove(body);
+            Map<String, Object> response = new HashMap<>();
+            response.put("message", result);
+            return ResponseEntity.ok(response);
+        }
+        catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
     }
 
     @PostMapping("/approve")
-    public String approveRent(@RequestBody Map<String, Object> body){
-        return receiptService.approveRent(body);
+    public ResponseEntity<Map<String, Object>> approveRent(@RequestBody Map<String, Object> body){
+       try {
+              String result = receiptService.approveRent(body);
+              Map<String, Object> response = new HashMap<>();
+              response.put("message", result);
+              return ResponseEntity.ok(response);
+         }
+         catch (Exception e){
+              return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+
+       }
     }
 
     @PostMapping("/rentDetail")
-    public List<Receipt> rentDetail(@RequestBody Map<String, Object> body){
-        return customerService.rentDetail(body);
+    public ResponseEntity<Map<String, Object>> rentDetail(@RequestBody Map<String, Object> body){
+        try {
+            List<Receipt> receipts = customerService.rentDetail(body);
+            Map<String, Object> response = new HashMap<>();
+            response.put("receipts", receipts);
+            return ResponseEntity.ok(response);
+        }
+        catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
     }
 
 }

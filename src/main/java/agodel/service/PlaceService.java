@@ -1,6 +1,7 @@
 package agodel.service;
 
 import agodel.data.OwnerRepository;
+import agodel.model.OwnerModel;
 import agodel.model.PlaceModel;
 import agodel.model.Receipt;
 import org.springframework.stereotype.Service;
@@ -29,17 +30,18 @@ public class PlaceService {
         this.roomService = roomService;
     }
 
-    public String create(Map<String, Object> body) {
+    public String create(Map<String, Object> body,String id) {
         try {
             PlaceModel place = new PlaceModel();
             PlaceModel lastRec = placeRepository.findTopByOrderByPlaceIdDesc();
             int currentId = Integer.parseInt(lastRec.getPlaceId())+1;
             place.setPlaceId(String.valueOf(currentId));
-            place.setName((String) body.get("name"));
-            place.setAddress((String) body.get("address"));
-            place.setOwner(OwnerRepository.getReferenceById((String) body.get("owner")));
+            place.setName("Enter name");
+            place.setAddress("Enter address");
+            place.setOwner(OwnerRepository.getReferenceById(id));
+            place.setStatus("Private");
             placeRepository.save(place);
-            return "Place created successfully";
+            return "Create place success";
         } catch (Exception e) {
             return "Error creating place";
         }
@@ -47,9 +49,12 @@ public class PlaceService {
 
     public String edit(Map<String, Object> body){
         try{
-            PlaceModel placeModel = placeRepository.findById((String)body.get("placeId")).get();
+            String ownerId = (String) body.get("ownerId");
+            OwnerModel owner = OwnerRepository.findByOwnerId(ownerId);
+            PlaceModel placeModel = placeRepository.findByOwnerOwnerId(owner);
             placeModel.setAddress((String) body.get("newAddress"));
             placeModel.setName((String) body.get("newName"));
+            placeModel.setStatus((String) body.get("newStatus"));
             entityManager.merge(placeModel);
             return "edit success!";
         } catch (Exception e){

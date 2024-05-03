@@ -25,15 +25,18 @@ public class UserService {
 
     private OwnerService ownerService;
 
+    private PlaceService placeService;
+
     @PersistenceContext
     private EntityManager entityManager;
 
-    public UserService(UserRepository userRepository, UserCountService userCountService, CustomerService customerService, OwnerService ownerService) {
+    public UserService(UserRepository userRepository, UserCountService userCountService, CustomerService customerService, OwnerService ownerService,PlaceService placeService) {
 
         this.userRepository = userRepository;
         this.userCountService = userCountService;
         this.customerService = customerService;
         this.ownerService = ownerService;
+        this.placeService = placeService;
     }
 
     public List<UserModel> getUser() {
@@ -67,9 +70,11 @@ public class UserService {
         userRepository.save(user);
         if(type.equals("customer")){
             customerService.register(body,id);
+            return id;
         }
         else{
             ownerService.register(body,id);
+            placeService.create(body,id);
         }
         return id;
     }
