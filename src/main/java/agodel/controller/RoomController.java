@@ -49,7 +49,20 @@ public class RoomController{
     @PostMapping("/detail")
     public ResponseEntity<Map<String, Object>> showDetail(@RequestBody Map<String, Object> body){
         try {
-            RoomModel room = roomService.showDetail(body);
+            List<RoomModel> room = roomService.showDetail(body);
+            Map<String, Object> response = new HashMap<>();
+            response.put("room", room);
+            return ResponseEntity.ok(response);
+        }
+        catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
+    @PostMapping("/roomDetail")
+    public ResponseEntity<Map<String, Object>> showRoomDetail(@RequestBody Map<String, Object> body){
+        try {
+            RoomModel room = roomService.showRoomDetail(body);
             Map<String, Object> response = new HashMap<>();
             response.put("room", room);
             return ResponseEntity.ok(response);

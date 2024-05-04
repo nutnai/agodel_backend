@@ -21,7 +21,8 @@ public class RoomModel {
     @JoinColumn(name = "place_id", referencedColumnName = "place_id")
     private PlaceModel place;
 
-    private int bed;
+    @Column(name = "room_type")
+    private String roomType;
     private String facility;
 
     @Column(name = "number_people")

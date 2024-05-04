@@ -47,7 +47,7 @@ public class RoomService {
         String placeId = placeModel.getPlaceId();
         room.setPlace(placeRepository.findByPlaceId(placeId));
         room.setOwner(ownerRepository.findByOwnerId(ownerId));
-        room.setBed((Integer) body.get("bed"));
+        room.setRoomType((String) body.get("roomType"));
         room.setFacility((String) body.get("facility"));
         room.setNumberPeople((Integer) body.get("people"));
         room.setPrice((Integer) body.get("price"));
@@ -58,10 +58,10 @@ public class RoomService {
 
     public String edit(Map<String, Object> body){
         try{
-            String ownerId = (String) body.get("ownerId");
-            RoomModel room = roomRepository.findByOwnerOwnerId(ownerId);
+            String roomId = (String) body.get("roomId");
+            RoomModel room = roomRepository.findByRoomId(roomId);
             room.setFacility((String) body.get("newFacility"));
-            room.setBed((Integer) body.get("newBed"));
+            room.setRoomType((String) body.get("newType"));
             room.setStatus((String) body.get("newStatus"));
             room.setPrice((Integer) body.get("newPrice"));
             room.setNumberPeople((Integer) body.get("newNumber"));
@@ -71,8 +71,12 @@ public class RoomService {
             return "error!!!";
         }
     }
-    public RoomModel showDetail(Map<String, Object> body){
+    public List<RoomModel> showDetail(Map<String, Object> body){
         return roomRepository.findByOwnerOwnerId((String) body.get("ownerId"));
+    }
+
+    public RoomModel showRoomDetail(Map<String, Object> body){
+        return roomRepository.findByRoomId((String) body.get("roomId"));
     }
 
 //    public List<PlaceModel> search(List<PlaceModel> place,int num) {
