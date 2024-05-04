@@ -6,6 +6,7 @@ import java.util.Map;
 
 import agodel.data.PlaceRepository;
 import agodel.model.PlaceModel;
+import agodel.model.RoomModel;
 import agodel.model.Receipt;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -72,13 +73,15 @@ public class PlaceController{
     @PostMapping("/search")
     public ResponseEntity<Map<String, Object>> search(@RequestBody Map<String, Object> body){
         try {
-            List<PlaceModel> places = placeService.search(body);
+            List<RoomModel> places = placeService.search(body);
             Map<String, Object> response = new HashMap<>();
             response.put("places", places);
             return ResponseEntity.ok(response);
         }
         catch (Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            Map<String, Object> response = new HashMap<>();
+            response.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
 

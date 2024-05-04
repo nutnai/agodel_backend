@@ -3,6 +3,7 @@ package agodel.service;
 import agodel.data.OwnerRepository;
 import agodel.model.OwnerModel;
 import agodel.model.PlaceModel;
+import agodel.model.RoomModel;
 import agodel.model.Receipt;
 import org.springframework.stereotype.Service;
 import agodel.data.PlaceRepository;
@@ -56,7 +57,7 @@ public class PlaceService {
             placeModel.setName((String) body.get("newName"));
             placeModel.setStatus((String) body.get("newStatus"));
             entityManager.merge(placeModel);
-            return "edit success!";
+            return "edit success!"; 
         } catch (Exception e){
             return "error!!!";
         }
@@ -77,7 +78,7 @@ public class PlaceService {
         return roomService.calPrice(body,customerId);
     }
 
-    public List<PlaceModel> search(Map<String, Object> body){
+    public List<RoomModel> search(Map<String, Object> body){
         return placeRepository.findPlaceBySearchCriteria((String) body.get("address"), (Integer) body.get("numberPeople"),(Integer) body.get("lowerPrice"),(Integer) body.get("upperPrice"));
     }
 
