@@ -50,8 +50,3 @@ flyway {
 	baselineOnMigrate = true
 	baselineDescription = "Baseline migration"
 }
-
-task seeder(type: JavaExec) {
-    classpath = sourceSets.main.runtimeClasspath
-    main = 'agodel.seeder.UserSeeder'
-}

@@ -9,11 +9,14 @@ import agodel.data.OwnerRepository;
 import agodel.model.CustomerModel;
 import agodel.model.OwnerModel;
 import agodel.model.UserModel;
+
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import org.springframework.stereotype.Service;
 
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import agodel.util.JwtUtil;
 
 @Service
 @Transactional
@@ -88,12 +91,10 @@ public class UserService {
         List<UserModel> users = userRepository.findByUsername(username);
         if (users.isEmpty()) {
             throw new Exception("user not found");
-            
-
         }
         String password = users.get(0).getPassword();
         if (((String) body.get("password")).equals(password)) {
-            return users.get(0).getId();
+            return JwtUtil.generateToken(users.get(0).getId());
         }
         throw new Exception("password not match");
     }

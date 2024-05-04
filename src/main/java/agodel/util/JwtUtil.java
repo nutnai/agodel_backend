@@ -15,23 +15,27 @@ import org.springframework.beans.factory.annotation.Value;
 public class JwtUtil implements Serializable {
     private static final long serialVersionUID = -2550185165626007488L;
 
-    @Value("${jwt.secret.key}")
-    private String secret;
+    private static String secret;
 
-    public String generateToken(String id) {
+    @Value("${jwt.secret.key}")
+    private void setSecret(String secret) {
+        JwtUtil.secret = secret;
+    }
+
+    public static String generateToken(String id) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("id", id);
         return doGenerateToken(claims);
     }
 
-    public String doGenerateToken(Map<String, Object> claims) {
+    private static String doGenerateToken(Map<String, Object> claims) {
         return Jwts.builder()
                 .claims(claims)
                 .signWith(Keys.hmacShaKeyFor(secret.getBytes()), Jwts.SIG.HS256)
                 .compact();
     }
 
-    public Object validateToken(String token) {
+    public static Object validateToken(String token) {
         //validate token by check token's signature and secret key is the same
         
         try {

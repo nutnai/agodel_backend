@@ -82,14 +82,16 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity testLogin(@RequestBody Map<String, Object> body) {
+    public ResponseEntity<Map<String, Object>> testLogin(@RequestBody Map<String, Object> body) {
         try {
-            String id = userService.login(body);
+            String token = userService.login(body);
             Map<String, Object> response = new HashMap<>();
-            response.put("id", id);
+            response.put("token", token);
             return ResponseEntity.ok(response);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+            Map<String, Object> response = new HashMap<>();
+            response.put("error", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
     @PostMapping("/getCustomer")
