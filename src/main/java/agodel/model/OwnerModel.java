@@ -19,6 +19,7 @@ public class OwnerModel {
     @Column(name = "owner_id")
     private String ownerId;
 
+    private String username;
     private String firstname;
     private String lastname;
     private String phone;

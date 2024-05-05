@@ -1,6 +1,7 @@
 CREATE TABLE `customer`
 (
     `customer_id` varchar(10) NOT NULL,
+    `username`   tinytext,
     `firstname`  tinytext,
     `lastname`   tinytext,
     `phone`      tinytext,
@@ -11,6 +12,7 @@ CREATE TABLE `customer`
 CREATE TABLE `owner`
 (
     `owner_id`   varchar(10) NOT NULL,
+    `username`   tinytext,
     `firstname` tinytext,
     `lastname`  tinytext,
     `phone`     int DEFAULT NULL,
