@@ -20,25 +20,24 @@ CREATE TABLE `owner`
 
 CREATE TABLE `place`
 (
-    `place_id` varchar(10) NOT NULL,
-    `owner_id` varchar(10) DEFAULT NULL,
+    `place_id` varchar(10) NOT NULL PRIMARY KEY,
+    `owner_id` varchar(10) NOT NULL,
     `name`    tinytext,
-    `address` tinytext,
-    `status` varchar(25),
-    PRIMARY KEY (`place_id`),
-    KEY `owner_id` (`owner_id`),
+    `address` TEXT,
+    `status` enum('AVAILABLE', 'UNAVAILABE') DEFAULT 'AVAILABLE',
     CONSTRAINT `place_ibfk_1` FOREIGN KEY (`owner_id`) REFERENCES `owner` (`owner_id`)
 );
 
 CREATE TABLE `room`
 (
+    `place_id` varchar(10) NOT NULL,
     `room_id`       varchar(10) NOT NULL,
-    `place_id`      varchar(10) DEFAULT NULL,
+    `owner_id`      varchar(10) NOT NULL,
     `bed`          smallint    DEFAULT NULL,
     `facility`     tinytext,
     `number_people` smallint    DEFAULT NULL,
     `price`        smallint    DEFAULT NULL,
-    `status` varchar(25),
+    `status`      enum('AVAILABLE', 'UNAVAILABE') DEFAULT 'AVAILABLE',
     PRIMARY KEY (`room_id`),
     CONSTRAINT `room_ibfk_1` FOREIGN KEY (`place_id`) REFERENCES `place` (`place_id`)
 );
