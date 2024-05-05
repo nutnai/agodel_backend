@@ -1,10 +1,8 @@
 package agodel.controller;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import agodel.model.Receipt;
 import agodel.service.PlaceService;
 import agodel.util.AuthenUtil;
 import agodel.util.AuthenUtil.Role;
@@ -12,7 +10,6 @@ import agodel.DTO.PlaceDTO.*;
 import agodel.DTO.UserDTO.GetOwnerDTO;
 import agodel.exception.ResponseEntityException;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -53,18 +50,16 @@ public class PlaceController {
         }
     }
 
-    // ! todo: see sequence diagram
-    @PostMapping("/rent")
+    @PostMapping("/reserve")
     public ResponseEntity<Map<String, Object>> rent(
             @RequestHeader(required = false) Map<String, Object> header,
             @RequestBody(required = false) Map<String, Object> body) {
         try {
-            Receipt receipt = placeService.rentRoom(body);
-            Map<String, Object> response = new HashMap<>();
-            response.put("receipt", receipt);
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            String id = AuthenUtil.authen(List.of(Role.CUSTOMER_ID), header, body);
+            ReserveDTO reserveDTO = new ReserveDTO(body);
+            return ResponseEntity.ok(placeService.reserve(reserveDTO, id));
+        } catch (ResponseEntityException e) {
+            return e.getResponseEntity();
         }
     }
 

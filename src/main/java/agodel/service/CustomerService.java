@@ -1,6 +1,5 @@
 package agodel.service;
 
-import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 
@@ -8,12 +7,10 @@ import agodel.DTO.UserDTO.*;
 import agodel.data.CustomerRepository;
 import agodel.exception.ResponseEntityException;
 import agodel.model.CustomerModel;
-import agodel.model.Receipt;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -23,14 +20,11 @@ import jakarta.persistence.PersistenceContext;
 public class CustomerService {
     private CustomerRepository customerRepository;
 
-    private ReceiptService receiptService;
-
     @PersistenceContext
     private EntityManager entityManager;
 
-    public CustomerService(CustomerRepository customerRepository, ReceiptService receiptService) {
+    public CustomerService(CustomerRepository customerRepository) {
         this.customerRepository = customerRepository;
-        this.receiptService = receiptService;
     }
 
     public void register(RegisterDTO dto, String id) throws ResponseEntityException {
@@ -90,9 +84,9 @@ public class CustomerService {
         }
     }
 
-    public List<Receipt> rentDetail(Map<String, Object> body) {
-        CustomerModel customerModel = customerRepository.findByCustomerId((String) body.get("customerId"));
-        return receiptService.showDetail(body, customerModel);
-    }
+    // public List<Receipt> rentDetail(Map<String, Object> body) {
+    //     CustomerModel customerModel = customerRepository.findByCustomerId((String) body.get("customerId"));
+    //     return receiptService.showDetail(body, customerModel);
+    // }
 
 }

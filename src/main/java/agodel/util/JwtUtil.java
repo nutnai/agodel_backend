@@ -34,14 +34,15 @@ public class JwtUtil implements Serializable {
                 .compact();
     }
 
-    public static Object validateToken(String token) {
-        //validate token by check token's signature and secret key is the same
-        
+    public static Map<String, Object> validateToken(String token) {
+        // validate token by check token's signature and secret key is the same
+
         try {
-            Object t = Jwts.parser().verifyWith(Keys.hmacShaKeyFor(secret.getBytes())).build().parse(token).getPayload();
+            Map<String, Object> t = (Map<String, Object>) Jwts.parser()
+                    .verifyWith(Keys.hmacShaKeyFor(secret.getBytes())).build().parse(token).getPayload();
             Map<String, Object> result = new HashMap<>();
             result.put("isValid", true);
-            result.put("id", ((Map<String, Object>) t).get("id"));
+            result.put("id", t.get("id"));
             return result;
         } catch (Exception e) {
             Map<String, Object> result = new HashMap<>();

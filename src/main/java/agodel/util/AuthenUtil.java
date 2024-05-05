@@ -7,9 +7,6 @@ import java.util.Map;
 import org.springframework.stereotype.Component;
 
 import agodel.exception.ResponseEntityException;
-import agodel.DTO.UserDTO.GetCustomerDTO;
-import agodel.DTO.UserDTO.GetOwnerDTO;
-import agodel.util.ValidateType;
 
 import org.springframework.http.HttpStatus;
 
@@ -42,7 +39,7 @@ public class AuthenUtil implements Serializable {
         }
         //remove bearer
         token = token.substring(7);
-        Map<String, Object> result = (Map<String, Object>) JwtUtil.validateToken(token);
+        Map<String, Object> result = JwtUtil.validateToken(token);
         if (!(boolean) result.get("isValid")) {
             throw new ResponseEntityException("token is invalid", HttpStatus.UNAUTHORIZED);
         }
