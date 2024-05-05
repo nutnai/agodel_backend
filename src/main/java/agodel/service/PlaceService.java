@@ -44,12 +44,15 @@ public class PlaceService {
             CreateDTO createDTO = new CreateDTO(registerDTO.getBody());
             PlaceModel place = new PlaceModel();
             PlaceModel lastRec = placeRepository.findTopByOrderByPlaceIdDesc();
-            int currentId = Integer.parseInt(lastRec.getPlaceId()) + 1;
+            int currentId = 1;
+            if (lastRec != null) {
+                currentId = Integer.parseInt(lastRec.getPlaceId()) + 1;
+            }
             place.setPlaceId(String.valueOf(currentId));
             place.setName(createDTO.getName());
             place.setAddress(createDTO.getAddress());
             place.setOwner(ownerModel);
-            place.setStatus("UNAVAILABLE");
+            place.setStatus("AVAILABLE");
             placeRepository.save(place);
         } catch (Exception e) {
             throw new ResponseEntityException("can't create place: " + e.getMessage(),
@@ -111,9 +114,32 @@ public class PlaceService {
         return roomService.calPrice(body, customerId);
     }
 
-    public List<PlaceModel> search(Map<String, Object> body) {
-        return placeRepository.findPlaceBySearchCriteria((String) body.get("address"),
-                (Integer) body.get("numberPeople"), (Integer) body.get("lowerPrice"), (Integer) body.get("upperPrice"));
+    public Map<String, Object> search(SearchDTO searchDTO) throws ResponseEntityException {
+        try {
+            if (searchDTO.getKeyword() == null) {
+                searchDTO.setKeyword("");
+            }
+            if (searchDTO.getNumberPeople() == null) {
+                searchDTO.setNumberPeople(1);
+            }
+            if (searchDTO.getLowerPrice() == null) {
+                searchDTO.setLowerPrice(0.0);
+            }
+            if (searchDTO.getUpperPrice() == null) {
+                searchDTO.setUpperPrice(1000000000.0);
+            }
+            Map<String, Object> response = new HashMap<>();
+            List<PlaceModel> places = placeRepository.findPlaceBySearchCriteria(
+                    searchDTO.getKeyword(),
+                    searchDTO.getNumberPeople(),
+                    searchDTO.getLowerPrice(),
+                    searchDTO.getUpperPrice());
+            response.put("places", places);
+            return response;
+        } catch (Exception e) {
+            throw new ResponseEntityException("can't search place: " + e.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
 }

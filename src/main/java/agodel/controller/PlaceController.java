@@ -55,8 +55,11 @@ public class PlaceController {
         }
     }
 
+    // ! todo: see sequence diagram
     @PostMapping("/rent")
-    public ResponseEntity<Map<String, Object>> rent(@RequestBody Map<String, Object> body) {
+    public ResponseEntity<Map<String, Object>> rent(
+            @RequestHeader(required = false) Map<String, Object> header,
+            @RequestBody(required = false) Map<String, Object> body) {
         try {
             Receipt receipt = placeService.rentRoom(body);
             Map<String, Object> response = new HashMap<>();
@@ -68,20 +71,16 @@ public class PlaceController {
     }
 
     @PostMapping("/search")
-    public ResponseEntity<Map<String, Object>> search(@RequestBody Map<String, Object> body) {
+    public ResponseEntity<Map<String, Object>> search(
+            @RequestHeader(required = false) Map<String, Object> header,
+            @RequestBody(required = false) Map<String, Object> body) {
         try {
-            List<RoomModel> places = placeService.search(body);
-            Map<String, Object> response = new HashMap<>();
-            response.put("places", places);
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            AuthenUtil.authen(List.of(Role.ALL), header);
+            SearchDTO searchDTO = new SearchDTO(body);
+            return ResponseEntity.ok(placeService.search(searchDTO));
+        } catch (ResponseEntityException e) {
+            return e.getResponseEntity();
         }
-    }
-
-    @PostMapping("/testSearch")
-    public List<PlaceModel> testSearch(@RequestBody Map<String, Object> body) {
-        return placeService.testSearch(body);
     }
 
 }
