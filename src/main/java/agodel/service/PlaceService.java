@@ -1,7 +1,7 @@
 package agodel.service;
 
 import agodel.DTO.UserDTO.RegisterDTO;
-import agodel.DTO.PlaceDTO.CreateDTO;
+import agodel.DTO.PlaceDTO.*;
 import agodel.data.OwnerRepository;
 import agodel.model.OwnerModel;
 import agodel.model.PlaceModel;
@@ -18,6 +18,7 @@ import org.springframework.http.HttpStatus;
 
 import java.util.List;
 import java.util.Map;
+import java.util.HashMap;
 
 @Service
 @Transactional
@@ -54,18 +55,36 @@ public class PlaceService {
         }
     }
 
-    public String edit(Map<String, Object> body) {
+    public Map<String, Object> edit(EditDTO editDTO) throws ResponseEntityException {
+        PlaceModel placeModel;
+        OwnerModel ownerModel;
         try {
-            String ownerId = (String) body.get("ownerId");
-            OwnerModel owner = ownerRepository.findByOwnerId(ownerId);
-            PlaceModel placeModel = placeRepository.findByOwnerOwnerId(ownerId);
-            placeModel.setAddress((String) body.get("newAddress"));
-            placeModel.setName((String) body.get("newName"));
-            placeModel.setStatus((String) body.get("newStatus"));
-            entityManager.merge(placeModel);
-            return "edit success!";
+            ownerModel = ownerRepository.findByOwnerId(editDTO.getOwnerId());
         } catch (Exception e) {
-            return "error!!!";
+            throw new ResponseEntityException("Owner not found", HttpStatus.NOT_FOUND);
+        }
+        try {
+            placeModel = placeRepository.findByOwnerOwnerId(ownerModel.getOwnerId());
+        } catch (Exception e) {
+            throw new ResponseEntityException("Place not found", HttpStatus.NOT_FOUND);
+        }
+        try {
+            if (editDTO.getNewName() != null) {
+                placeModel.setName(editDTO.getNewName());
+            }
+            if (editDTO.getNewAddress() != null) {
+                placeModel.setAddress(editDTO.getNewAddress());
+            }
+            if (editDTO.getNewStatus() != null) {
+                placeModel.setStatus(editDTO.getNewStatus());
+            }
+            entityManager.persist(placeModel);
+            Map<String, Object> response = new HashMap<>();
+            response.put("message", "edit success!");
+            return response;
+        } catch (Exception e) {
+            throw new ResponseEntityException("can't edit place: " + e.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

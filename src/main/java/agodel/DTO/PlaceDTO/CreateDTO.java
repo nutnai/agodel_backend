@@ -14,7 +14,7 @@ import lombok.*;
 @Setter
 public class CreateDTO extends DTO{
     @NotNull (message = "name is required")
-    @Size(min = 1, max = 32, message = "name must be between 1 and 32 characters")
+    @Size(min = 1, max = 128, message = "name must be between 1 and 128 characters")
     private String name;
 
     @NotNull (message = "address is required")
