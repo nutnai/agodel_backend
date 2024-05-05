@@ -102,6 +102,7 @@ public class UserService {
         }
         Map<String, Object> response = new HashMap<>();
         response.put("token", JwtUtil.generateToken(id));
+        response.put("id", id);
         return response;
     }
 
@@ -117,6 +118,7 @@ public class UserService {
         }
         Map<String, Object> response = new HashMap<>();
         response.put("token", JwtUtil.generateToken(users.get(0).getId()));
+        response.put("id", users.get(0).getId());
         return response;
     }
 
