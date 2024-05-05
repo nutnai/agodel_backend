@@ -70,9 +70,9 @@ public class PlaceController {
     @PostMapping("/search")
     public ResponseEntity<Map<String, Object>> search(@RequestBody Map<String, Object> body) {
         try {
-            List<RoomModel> places = placeService.search(body);
+            // List<RoomModel> places = placeService.search(body);
             Map<String, Object> response = new HashMap<>();
-            response.put("places", places);
+            // response.put("places", places);
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);

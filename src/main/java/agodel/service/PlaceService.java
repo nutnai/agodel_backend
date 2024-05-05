@@ -111,9 +111,9 @@ public class PlaceService {
         return roomService.calPrice(body, customerId);
     }
 
-    public List<PlaceModel> search(Map<String, Object> body) {
-        return placeRepository.findPlaceBySearchCriteria((String) body.get("address"),
-                (Integer) body.get("numberPeople"), (Integer) body.get("lowerPrice"), (Integer) body.get("upperPrice"));
-    }
+    // public List<PlaceModel> search(Map<String, Object> body) {
+    //     return placeRepository.findPlaceBySearchCriteria((String) body.get("address"),
+    //             (Integer) body.get("numberPeople"), (Integer) body.get("lowerPrice"), (Integer) body.get("upperPrice"));
+    // }
 
 }
