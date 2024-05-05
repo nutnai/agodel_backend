@@ -51,12 +51,12 @@ public class UserService {
         this.ownerRepository = ownerRepository;
     }
 
-    public ResponseEntity<Map<String, Object>> getUser() throws ResponseEntityException {
+    public Map<String, Object> getUser() throws ResponseEntityException {
         try {
             Map<String, Object> response = new HashMap<>();
             List<UserModel> users = userRepository.findAll();
             response.put("users", users);
-            return ResponseEntity.ok(response);
+            return response;
         } catch (Exception e) {
             throw new ResponseEntityException("Error getting user", HttpStatus.INTERNAL_SERVER_ERROR);
         }

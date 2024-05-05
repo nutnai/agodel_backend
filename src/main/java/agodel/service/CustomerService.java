@@ -2,8 +2,9 @@ package agodel.service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.HashMap;
 
-import agodel.DTO.UserDTO.RegisterDTO;
+import agodel.DTO.UserDTO.*;
 import agodel.data.CustomerRepository;
 import agodel.exception.ResponseEntityException;
 import agodel.model.CustomerModel;
@@ -12,6 +13,7 @@ import agodel.model.Receipt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -45,8 +47,15 @@ public class CustomerService {
         }
     }
 
-    public CustomerModel showDetail(Map<String, Object> body){
-        return customerRepository.findByCustomerId((String) body.get("customerId"));
+    public Map<String, Object> showDetail(GetCustomerDTO getCustomerDTO) throws ResponseEntityException{
+        try {
+            CustomerModel customerModel = customerRepository.findByCustomerId(getCustomerDTO.getCustomerId());
+            Map<String, Object> response = new HashMap<>();
+            response.put("customer", customerModel);
+            return response;
+        } catch (Exception e){
+            throw new ResponseEntityException("Customer not found", HttpStatus.NOT_FOUND);
+        }
     }
 
     public String edit(Map<String, Object> body){

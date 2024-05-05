@@ -43,7 +43,7 @@ public class UserController {
             @RequestBody(required = false) Map<String, Object> body) {
         try {
             AuthenUtil.authen(List.of(Role.ADMIN), header);
-            return userService.getUser();
+            return ResponseEntity.ok(userService.getUser());
         } catch (ResponseEntityException e) {
             return e.getResponseEntity();
         }
@@ -89,14 +89,14 @@ public class UserController {
     }
 
     @PostMapping("/getCustomer")
-    public ResponseEntity<Map<String, Object>> getCustomer(@RequestBody Map<String, Object> body) {
+    public ResponseEntity<Map<String, Object>> getCustomer(@RequestHeader(required = false) Map<String, Object> header,
+            @RequestBody(required = false) Map<String, Object> body) {
         try {
-            CustomerModel customer = customerService.showDetail(body);
-            Map<String, Object> response = new HashMap<>();
-            response.put("customer", customer);
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            AuthenUtil.authen(List.of(Role.ALL), header);
+            GetCustomerDTO getCustomerDTO = new GetCustomerDTO(body);
+            return ResponseEntity.ok(customerService.showDetail(getCustomerDTO));
+        } catch (ResponseEntityException e) {
+            return e.getResponseEntity();
         }
     }
 
