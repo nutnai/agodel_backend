@@ -7,6 +7,7 @@ import agodel.exception.ResponseEntityException;
 
 import java.io.Serializable;
 import java.util.Map;
+import java.util.Date;
 
 @Component
 public class ValidateType implements Serializable {
@@ -50,5 +51,22 @@ public class ValidateType implements Serializable {
         } catch (Exception e) {
             throw new ResponseEntityException(key + " must be number", HttpStatus.BAD_REQUEST);
         }
+    }
+
+    public static Date validateDate(Map<String, Object> body, String key) throws ResponseEntityException {
+        if (body == null) {
+            return null;
+        }
+        if (body.get(key) == null) {
+            return null;
+        }
+        if (!(body.get(key) instanceof Date)) {
+            try {
+                return (Date) body.get(key);
+            } catch (Exception e) {
+                throw new ResponseEntityException(key + " must be date", HttpStatus.BAD_REQUEST);
+            }
+        }
+        return (Date) body.get(key);
     }
 }

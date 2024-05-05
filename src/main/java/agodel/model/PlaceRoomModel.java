@@ -8,18 +8,18 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "place_room")
-public class PlaceRoom {
+public class PlaceRoomModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "placeID", nullable = false)
-    private PlaceModel placeID;
+    @JoinColumn(name = "place_id", referencedColumnName = "place_id", nullable = false)
+    private PlaceModel placeId;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "roomID", nullable = false)
-    private RoomModel roomModelID;
+    @JoinColumn(name = "room_id", referencedColumnName = "room_id", nullable = false)
+    private RoomModel roomId;
 
 }

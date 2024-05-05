@@ -109,17 +109,16 @@ CREATE TABLE `room_image`
 
 CREATE TABLE `receipt`
 (
-    `receipt_id`    varchar(10) NOT NULL,
-    `status`       tinytext,
+    `receipt_id`    varchar(10) NOT NULL PRIMARY KEY,
+    `status`       enum('UNAPPROVED', 'UNPAID', 'CANCELLED', 'PAID', 'COMPLETED') DEFAULT 'UNAPPROVED',
     `date_create`   datetime    DEFAULT NULL,
     `date_pay`      datetime    DEFAULT NULL,
     `date_check_in`  datetime    DEFAULT NULL,
     `date_check_out` datetime    DEFAULT NULL,
     `day_count`     smallint    DEFAULT NULL,
-    `price`        smallint    DEFAULT NULL,
+    `price`        DOUBLE    DEFAULT NULL,
     `room_id`       varchar(10) DEFAULT NULL,
     `customer_id`   varchar(10) DEFAULT NULL,
-    PRIMARY KEY (`receipt_id`),
     KEY `room_id` (`room_id`),
     KEY `customer_id` (`customer_id`),
     CONSTRAINT `receipt_ibfk_1` FOREIGN KEY (`room_id`) REFERENCES `room` (`room_id`),

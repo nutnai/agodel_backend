@@ -132,8 +132,11 @@ public class UserService {
     }
 
     public Map<String, Object> showDetail(GetUserDTO getUserDTO) throws ResponseEntityException {
+        UserModel userModel = userRepository.findById(getUserDTO.getUserId()).get();
+        if (userModel == null) {
+            throw new ResponseEntityException("User not found", HttpStatus.NOT_FOUND);
+        }
         try {
-            UserModel userModel = userRepository.findById(getUserDTO.getUserId()).get();
             Map<String, Object> response = new HashMap<>();
             response.put("user", userModel);
             return response;

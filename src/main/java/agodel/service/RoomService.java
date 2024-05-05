@@ -1,13 +1,15 @@
 package agodel.service;
 
-import agodel.DTO.RoomDTO.CreateDTO;
+import agodel.DTO.PlaceDTO.ReserveDTO;
+import agodel.DTO.RoomDTO.*;
+import agodel.DTO.UserDTO.GetOwnerDTO;
 import agodel.data.OwnerRepository;
 import agodel.data.PlaceRepository;
-import agodel.model.OwnerModel;
-import agodel.model.PlaceModel;
-import agodel.model.Receipt;
-import agodel.model.RoomModel;
 import agodel.data.RoomRepository;
+import agodel.data.PlaceRoomRepository;
+import agodel.model.PlaceModel;
+import agodel.model.PlaceRoomModel;
+import agodel.model.RoomModel;
 import agodel.exception.ResponseEntityException;
 
 import jakarta.persistence.EntityManager;
@@ -31,24 +33,25 @@ public class RoomService {
 
     private OwnerRepository ownerRepository;
 
+    private PlaceRoomRepository placeRoomRepository;
+
     @PersistenceContext
     private EntityManager entityManager;
 
     public RoomService(RoomRepository roomRepository, PlaceRepository placeRepository, ReceiptService receiptService,
-            OwnerRepository ownerRepository) {
+            OwnerRepository ownerRepository, PlaceRoomRepository placeRoomRepository) {
         this.roomRepository = roomRepository;
         this.placeRepository = placeRepository;
         this.receiptService = receiptService;
         this.ownerRepository = ownerRepository;
+        this.placeRoomRepository = placeRoomRepository;
     }
 
     public Map<String, Object> create(CreateDTO createDTO) throws ResponseEntityException {
         String ownerId = createDTO.getOwnerId();
-        PlaceModel placeModel;
-        try {
-            placeModel = placeRepository.findByOwnerOwnerId(ownerId);
-        } catch (Exception e) {
-            throw new ResponseEntityException("Owner not found", HttpStatus.NOT_FOUND);
+        PlaceModel placeModel = placeRepository.findByOwnerOwnerId(ownerId);
+        if (placeModel == null) {
+            throw new ResponseEntityException("Place not found", HttpStatus.NOT_FOUND);
         }
         try {
             RoomModel room = new RoomModel();
@@ -69,6 +72,11 @@ public class RoomService {
             roomRepository.save(room);
             Map<String, Object> response = new java.util.HashMap<>();
             response.put("room", room);
+
+            PlaceRoomModel placeRoom = new PlaceRoomModel();
+            placeRoom.setPlaceId(placeModel);
+            placeRoom.setRoomId(room);
+            placeRoomRepository.save(placeRoom);
             return response;
         } catch (Exception e) {
             throw new ResponseEntityException("Error creating room", HttpStatus.INTERNAL_SERVER_ERROR);
@@ -76,37 +84,79 @@ public class RoomService {
 
     }
 
-    public String edit(Map<String, Object> body) {
+    public Map<String, Object> edit(EditDTO editDTO, String id) throws ResponseEntityException {
+        RoomModel room = roomRepository.findByRoomId(editDTO.getRoomId());
+        if (room == null) {
+            throw new ResponseEntityException("Room not found", HttpStatus.NOT_FOUND);
+        }
+        PlaceRoomModel placeRoom = placeRoomRepository.findById(Long.parseLong(editDTO.getRoomId())).get();
+        if (placeRoom == null) {
+            throw new ResponseEntityException("Room not found in relation", HttpStatus.NOT_FOUND);
+        }
+        if (!placeRoom.getPlaceId().getOwner().getOwnerId().equals(id)) {
+            throw new ResponseEntityException("You are not the owner of this room", HttpStatus.UNAUTHORIZED);
+        }
         try {
-            String roomId = (String) body.get("roomId");
-            RoomModel room = roomRepository.findByRoomId(roomId);
-            room.setFacility((String) body.get("newFacility"));
-            room.setRoomType((String) body.get("newType"));
-            room.setStatus((String) body.get("newStatus"));
-            room.setPrice((Integer) body.get("newPrice"));
-            room.setNumberPeople((Integer) body.get("newNumber"));
+            if (editDTO.getNewRoomType() != null) {
+                room.setRoomType(editDTO.getNewRoomType());
+            }
+            if (editDTO.getNewFacility() != null) {
+                room.setFacility(editDTO.getNewFacility());
+            }
+            if (editDTO.getNewNumberPeople() != null) {
+                room.setNumberPeople(editDTO.getNewNumberPeople());
+            }
+            if (editDTO.getNewPrice() != null) {
+                room.setPrice(editDTO.getNewPrice());
+            }
+            if (editDTO.getNewStatus() != null) {
+                room.setStatus(editDTO.getNewStatus());
+            }
             entityManager.merge(room);
-            return "edit success!";
+            Map<String, Object> response = new java.util.HashMap<>();
+            response.put("message", "edit success!");
+            return response;
         } catch (Exception e) {
-            return "error!!!";
+            throw new ResponseEntityException("can't edit room: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    public List<RoomModel> showDetail(Map<String, Object> body) {
-        return roomRepository.findByOwnerOwnerId((String) body.get("ownerId"));
+    public Map<String, Object> showDetail(GetOwnerDTO ownerDTO) throws ResponseEntityException {
+        List<RoomModel> rooms = roomRepository.findByOwnerOwnerId(ownerDTO.getOwnerId());
+        if (rooms.isEmpty()) {
+            throw new ResponseEntityException("Room not found", HttpStatus.NOT_FOUND);
+        }
+        try {
+            Map<String, Object> response = new java.util.HashMap<>();
+            response.put("rooms", rooms);
+            return response;
+        } catch (Exception e) {
+            throw new ResponseEntityException("Room not found", HttpStatus.NOT_FOUND);
+        }
     }
 
-    public RoomModel showRoomDetail(Map<String, Object> body) {
-        return roomRepository.findByRoomId((String) body.get("roomId"));
+    public Map<String, Object> showRoomDetail(GetRoomDTO roomDTO) throws ResponseEntityException {
+        try {
+            RoomModel room = roomRepository.findByRoomId(roomDTO.getRoomId());
+            Map<String, Object> response = new java.util.HashMap<>();
+            response.put("room", room);
+            return response;
+        } catch (Exception e) {
+            throw new ResponseEntityException("Room not found", HttpStatus.NOT_FOUND);
+        }
     }
 
     // public List<PlaceModel> search(List<PlaceModel> place,int num) {
     // }
 
-    public Receipt calPrice(Map<String, Object> body, String customerId) {
-        RoomModel thisRoom = roomRepository.findByRoomId((String) body.get("roomId"));
-        int dayCount = (Integer) body.get("dayCount");
-        int price = thisRoom.getPrice() * dayCount;
-        return receiptService.create(body, price, (String) body.get("roomId"), customerId);
+    public Map<String, Object> calPrice(ReserveDTO reserveDTO, Map<String, Object> payload) throws ResponseEntityException {
+        RoomModel room = roomRepository.findByRoomId(reserveDTO.getRoomId());
+        if (room == null) {
+            throw new ResponseEntityException("Room not found", HttpStatus.NOT_FOUND);
+        }
+        int dayCount = reserveDTO.getDayCount();
+        Double price = room.getPrice() * dayCount;
+        payload.put("price", price);
+        return receiptService.create(reserveDTO, payload);
     }
 }

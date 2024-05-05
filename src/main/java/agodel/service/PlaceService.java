@@ -6,8 +6,6 @@ import agodel.DTO.PlaceDTO.*;
 import agodel.data.OwnerRepository;
 import agodel.model.OwnerModel;
 import agodel.model.PlaceModel;
-import agodel.model.RoomModel;
-import agodel.model.Receipt;
 import agodel.data.PlaceRepository;
 import agodel.exception.ResponseEntityException;
 
@@ -108,9 +106,10 @@ public class PlaceService {
         }
     }
 
-    public Receipt rentRoom(Map<String, Object> body) {
-        String customerId = (String) body.get("customerId");
-        return roomService.calPrice(body, customerId);
+    public Map<String, Object> reserve(ReserveDTO reserveDTO, String id) throws ResponseEntityException {
+        Map<String, Object> payload = new HashMap<>();
+        payload.put("customerId", id);
+        return roomService.calPrice(reserveDTO, payload);
     }
 
     public Map<String, Object> search(SearchDTO searchDTO) throws ResponseEntityException {
