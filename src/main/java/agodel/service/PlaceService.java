@@ -41,7 +41,6 @@ public class PlaceService {
 
     public void create(RegisterDTO registerDTO, String id, OwnerModel ownerModel) throws ResponseEntityException {
         try {
-            CreateDTO createDTO = new CreateDTO(registerDTO.getBody());
             PlaceModel place = new PlaceModel();
             PlaceModel lastRec = placeRepository.findTopByOrderByPlaceIdDesc();
             int currentId = 1;
@@ -49,8 +48,8 @@ public class PlaceService {
                 currentId = Integer.parseInt(lastRec.getPlaceId()) + 1;
             }
             place.setPlaceId(String.valueOf(currentId));
-            place.setName(createDTO.getName());
-            place.setAddress(createDTO.getAddress());
+            place.setName("Place Name");
+            place.setAddress("Place Address");
             place.setOwner(ownerModel);
             place.setStatus("AVAILABLE");
             placeRepository.save(place);

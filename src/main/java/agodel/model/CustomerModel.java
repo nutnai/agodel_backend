@@ -19,6 +19,7 @@ public class CustomerModel {
     @Column(name = "customer_id")
     private String customerId;
 
+    private String username;
     private String firstname;
     private String lastname;
     private String phone;
