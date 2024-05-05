@@ -26,7 +26,7 @@ CREATE TABLE `place`
     `owner_id` varchar(10) NOT NULL,
     `name`    tinytext,
     `address` TEXT,
-    `status` enum('AVAILABLE', 'UNAVAILABE') DEFAULT 'AVAILABLE',
+    `status` enum('AVAILABLE', 'UNAVAILABLE') DEFAULT 'AVAILABLE',
     CONSTRAINT `place_ibfk_1` FOREIGN KEY (`owner_id`) REFERENCES `owner` (`owner_id`)
 );
 
