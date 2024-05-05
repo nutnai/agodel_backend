@@ -127,9 +127,16 @@ public class UserController {
     }
 
     @PostMapping("/editCustomer")
-    public String editCustomer(@RequestBody Map<String, Object> body) {
-
-        return customerService.edit(body);
+    public ResponseEntity<Map<String, Object>> editCustomer(
+            @RequestHeader(required = false) Map<String, Object> header,
+            @RequestBody(required = false) Map<String, Object> body) {
+        try {
+            AuthenUtil.authen(List.of(Role.CUSTOMER_ID), header, body);
+            EditCustomerDTO editCustomer = new EditCustomerDTO(body);
+            return ResponseEntity.ok(customerService.edit(editCustomer));
+        } catch (ResponseEntityException e) {
+            return e.getResponseEntity();
+        }
     }
 
     @PostMapping("/editOwner")

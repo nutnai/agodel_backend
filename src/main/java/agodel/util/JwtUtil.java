@@ -5,7 +5,6 @@ import java.util.Map;
 import java.util.HashMap;
 
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.AeadAlgorithm;
 import io.jsonwebtoken.security.Keys;
 
 import org.springframework.stereotype.Component;

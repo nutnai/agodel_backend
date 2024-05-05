@@ -13,6 +13,9 @@ public class ValidateType implements Serializable {
     private static final long serialVersionUID = -2550185165626007488L;
 
     public static String validateString(Map<String, Object> body, String key) throws ResponseEntityException{
+        if (body == null) {
+            return null;
+        }
         if (body.get(key) == null) {
             return null;
         }
