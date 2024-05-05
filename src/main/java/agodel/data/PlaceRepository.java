@@ -1,8 +1,6 @@
 package agodel.data;
 
-import agodel.model.OwnerModel;
 import agodel.model.PlaceModel;
-import agodel.model.RoomModel;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

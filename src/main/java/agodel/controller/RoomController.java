@@ -4,12 +4,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import agodel.data.RoomRepository;
 import agodel.model.Receipt;
 import agodel.model.RoomModel;
 import agodel.service.CustomerService;
 import agodel.service.RoomService;
 import agodel.service.ReceiptService;
+import agodel.util.AuthenUtil;
+import agodel.util.AuthenUtil.Role;
+import agodel.DTO.RoomDTO.*;
+import agodel.exception.ResponseEntityException;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,14 +40,11 @@ public class RoomController {
             @RequestHeader(required = false) Map<String, Object> header,
             @RequestBody(required = false) Map<String, Object> body) {
         try {
-            String result = roomService.create(body);
-            Map<String, Object> response = new HashMap<>();
-            response.put("message", result);
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            Map<String, Object> response = new HashMap<>();
-            response.put("message", e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+            AuthenUtil.authen(List.of(Role.OWNER_ID), header, body);
+            CreateDTO createDTO = new CreateDTO(body);
+            return ResponseEntity.ok(roomService.create(createDTO));
+        } catch (ResponseEntityException e) {
+            return e.getResponseEntity();
         }
     }
 

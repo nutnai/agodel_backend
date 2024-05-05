@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
-
 @Getter
 @Setter
 @Entity
@@ -26,17 +25,31 @@ public class RoomModel {
     private String facility;
 
     @Column(name = "number_people")
-    private int numberPeople;
+    private Integer numberPeople;
 
     @Column(name = "price")
-    private int price;
+    private Double price;
 
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private Status status;
+
+    public enum Status {
+        AVAILABLE,
+        UNAVAILABLE
+    }
 
     @OneToOne
     @JoinColumn(name = "owner_id", referencedColumnName = "owner_id")
     private OwnerModel owner;
 
     public RoomModel() {
+    }
+
+    public void setStatus(String status) {
+        if (status.equals("AVAILABLE")) {
+            this.status = Status.AVAILABLE;
+        } else if (status.equals("UNAVAILABLE")) {
+            this.status = Status.UNAVAILABLE;
+        }
     }
 }
