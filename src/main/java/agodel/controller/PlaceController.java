@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import agodel.model.PlaceModel;
+import agodel.model.RoomModel;
 import agodel.model.Receipt;
 import agodel.service.PlaceService;
 import agodel.util.AuthenUtil;
@@ -69,7 +70,7 @@ public class PlaceController {
     @PostMapping("/search")
     public ResponseEntity<Map<String, Object>> search(@RequestBody Map<String, Object> body) {
         try {
-            List<PlaceModel> places = placeService.search(body);
+            List<RoomModel> places = placeService.search(body);
             Map<String, Object> response = new HashMap<>();
             response.put("places", places);
             return ResponseEntity.ok(response);

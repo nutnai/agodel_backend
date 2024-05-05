@@ -6,6 +6,7 @@ import agodel.DTO.PlaceDTO.*;
 import agodel.data.OwnerRepository;
 import agodel.model.OwnerModel;
 import agodel.model.PlaceModel;
+import agodel.model.RoomModel;
 import agodel.model.Receipt;
 import agodel.data.PlaceRepository;
 import agodel.exception.ResponseEntityException;
