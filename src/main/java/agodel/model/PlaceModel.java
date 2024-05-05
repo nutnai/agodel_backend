@@ -3,7 +3,6 @@ package agodel.model;
 import jakarta.persistence.*;
 import lombok.*;
 
-
 @Getter
 @Setter
 @Entity
@@ -23,8 +22,18 @@ public class PlaceModel {
     @JoinColumn(name = "owner_id", referencedColumnName = "owner_id")
     private OwnerModel owner;
 
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private Status status;
+
+    public enum Status {
+        AVAILABLE,
+        UNAVAILABLE
+    }
 
     public PlaceModel() {
+    }
+
+    public void setStatus(String status) {
+        this.status = Status.valueOf(status);
     }
 }

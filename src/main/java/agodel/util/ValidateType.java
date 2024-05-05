@@ -12,7 +12,7 @@ import java.util.Map;
 public class ValidateType implements Serializable {
     private static final long serialVersionUID = -2550185165626007488L;
 
-    public static String validateString(Map<String, Object> body, String key) throws ResponseEntityException{
+    public static String validateString(Map<String, Object> body, String key) throws ResponseEntityException {
         if (body == null) {
             return null;
         }
@@ -25,7 +25,10 @@ public class ValidateType implements Serializable {
         return (String) body.get(key);
     }
 
-    public static Integer validateInt(Map<String, Object> body, String key) throws ResponseEntityException{
+    public static Integer validateInteger(Map<String, Object> body, String key) throws ResponseEntityException {
+        if (body == null) {
+            return null;
+        }
         if (body.get(key) == null) {
             return null;
         }
@@ -33,5 +36,19 @@ public class ValidateType implements Serializable {
             throw new ResponseEntityException(key + " must be integer", HttpStatus.BAD_REQUEST);
         }
         return (Integer) body.get(key);
+    }
+
+    public static Double validateDouble(Map<String, Object> body, String key) throws ResponseEntityException {
+        if (body == null) {
+            return null;
+        }
+        if (body.get(key) == null) {
+            return null;
+        }
+        try {
+            return Double.parseDouble(body.get(key).toString());
+        } catch (Exception e) {
+            throw new ResponseEntityException(key + " must be number", HttpStatus.BAD_REQUEST);
+        }
     }
 }
