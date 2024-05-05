@@ -74,11 +74,11 @@ public class UserService {
         }
     }
 
-    public String register(RegisterDTO dto) throws ResponseEntityException {
-        if (this.checkUser(dto.getUsername())) {
-            return "exits";
+    public Map<String, Object> register(RegisterDTO registerDTO) throws ResponseEntityException {
+        if (this.checkUser(registerDTO.getUsername())) {
+            throw new ResponseEntityException("username already exist", HttpStatus.CONFLICT);
         }
-        String type = dto.getType();
+        String type = registerDTO.getType();
         String id;
         if (type.equals("customer")) {
             id = userCountService.getCountCustomer();
@@ -88,33 +88,37 @@ public class UserService {
         UserModel user = new UserModel();
         try {
             user.setId(id);
-            user.setUsername(dto.getUsername());
-            user.setPassword(dto.getPassword());
+            user.setUsername(registerDTO.getUsername());
+            user.setPassword(registerDTO.getPassword());
             userRepository.save(user);
         } catch (Exception e) {
             throw new ResponseEntityException("can't create user: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
         if (type.equals("customer")) {
-            customerService.register(dto, id);
+            customerService.register(registerDTO, id);
         } else {
-            ownerService.register(dto, id);
+            ownerService.register(registerDTO, id);
             OwnerModel ownerModel = ownerRepository.findByOwnerId(id);
-            placeService.create(dto, id, ownerModel);
+            placeService.create(registerDTO, id, ownerModel);
         }
-        return JwtUtil.generateToken(id);
+        Map<String, Object> response = new HashMap<>();
+        response.put("token", JwtUtil.generateToken(id));
+        return response;
     }
 
-    public String login(Map<String, Object> body) throws Exception {
-        String username = (String) body.get("username");
+    public Map<String, Object> login(LoginDTO loginDTO) throws ResponseEntityException {
+        String username = loginDTO.getUsername();
         List<UserModel> users = userRepository.findByUsername(username);
         if (users.isEmpty()) {
-            throw new Exception("user not found");
+            throw new ResponseEntityException("username not found", HttpStatus.NOT_FOUND);
         }
         String password = users.get(0).getPassword();
-        if (((String) body.get("password")).equals(password)) {
-            return JwtUtil.generateToken(users.get(0).getId());
+        if (!loginDTO.getPassword().equals(password)) {
+            throw new ResponseEntityException("wrong password", HttpStatus.UNAUTHORIZED);
         }
-        throw new Exception("password not match");
+        Map<String, Object> response = new HashMap<>();
+        response.put("token", JwtUtil.generateToken(users.get(0).getId()));
+        return response;
     }
 
     public String resetPassword(Map<String, Object> body) {

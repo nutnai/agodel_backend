@@ -9,9 +9,6 @@ import org.springframework.http.HttpStatus;
 
 import agodel.exception.ResponseEntityException;
 
-import lombok.Getter;
-
-@Getter
 public class DTO {
 
     ValidatorFactory factory;
@@ -36,19 +33,8 @@ public class DTO {
             throw new ResponseEntityException(message.toString(), HttpStatus.BAD_REQUEST);
         }
     }
+
+    public Map<String, Object> getBody() {
+        return body;
+    }
 }
-
-//getter and setter
-//extends DTO
-//private attribute
-//constructor
-// public DTO(Map<String, Object> body) throws ResponseEntityException{
-//     super();
-//     if(body == null){
-//         return;
-//     }
-
-//     //validate and set attributes
-
-//     validate(this);
-// }
