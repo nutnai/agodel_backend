@@ -1,5 +1,6 @@
 package agodel.service;
 
+import agodel.DTO.UserDTO.GetOwnerDTO;
 import agodel.DTO.UserDTO.RegisterDTO;
 import agodel.DTO.PlaceDTO.*;
 import agodel.data.OwnerRepository;
@@ -93,9 +94,15 @@ public class PlaceService {
         return placeAddress;
     }
 
-    public PlaceModel showDetail(Map<String, Object> body) {
-        String ownerId = (String) body.get("ownerId");
-        return placeRepository.findByOwnerOwnerId(ownerId);
+    public Map<String, Object> showDetail(GetOwnerDTO getOwnerDTO) throws ResponseEntityException {
+        try {
+            PlaceModel placeModel = placeRepository.findByOwnerOwnerId(getOwnerDTO.getOwnerId());
+            Map<String, Object> response = new HashMap<>();
+            response.put("place", placeModel);
+            return response;
+        } catch (Exception e) {
+            throw new ResponseEntityException("Owner not found", HttpStatus.NOT_FOUND);
+        }
     }
 
     public Receipt rentRoom(Map<String, Object> body) {

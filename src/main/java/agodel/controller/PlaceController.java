@@ -10,13 +10,13 @@ import agodel.service.PlaceService;
 import agodel.util.AuthenUtil;
 import agodel.util.AuthenUtil.Role;
 import agodel.DTO.PlaceDTO.*;
+import agodel.DTO.UserDTO.GetOwnerDTO;
 import agodel.exception.ResponseEntityException;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-
 
 @RestController
 @Controller
@@ -42,14 +42,15 @@ public class PlaceController {
     }
 
     @PostMapping("/detail")
-    public ResponseEntity<Map<String, Object>> detail(@RequestBody Map<String, Object> body) {
+    public ResponseEntity<Map<String, Object>> detail(
+            @RequestHeader(required = false) Map<String, Object> header,
+            @RequestBody(required = false) Map<String, Object> body) {
         try {
-            PlaceModel place = placeService.showDetail(body);
-            Map<String, Object> response = new HashMap<>();
-            response.put("place", place);
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            AuthenUtil.authen(List.of(Role.ALL), header);
+            GetOwnerDTO getOwnerDTO = new GetOwnerDTO(body);
+            return ResponseEntity.ok(placeService.showDetail(getOwnerDTO));
+        } catch (ResponseEntityException e) {
+            return e.getResponseEntity();
         }
     }
 
