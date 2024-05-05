@@ -2,19 +2,22 @@ package agodel.service;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
+import java.util.HashMap;
 
 import agodel.data.UserRepository;
+import agodel.exception.ResponseEntityException;
 import agodel.data.OwnerRepository;
-import agodel.model.CustomerModel;
 import agodel.model.OwnerModel;
 import agodel.model.UserModel;
+import agodel.DTO.UserDTO.*;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 import agodel.util.JwtUtil;
 
@@ -36,7 +39,9 @@ public class UserService {
     @PersistenceContext
     private EntityManager entityManager;
 
-    public UserService(UserRepository userRepository, UserCountService userCountService, CustomerService customerService, OwnerService ownerService,PlaceService placeService,OwnerRepository ownerRepository) {
+    public UserService(UserRepository userRepository, UserCountService userCountService,
+            CustomerService customerService, OwnerService ownerService, PlaceService placeService,
+            OwnerRepository ownerRepository) {
 
         this.userRepository = userRepository;
         this.userCountService = userCountService;
@@ -46,44 +51,57 @@ public class UserService {
         this.ownerRepository = ownerRepository;
     }
 
-    public List<UserModel> getUser() {
-        return userRepository.findAll();
-    }
-
-    public Boolean checkUser(Map<String, Object> body) {
-        List<UserModel> user = userRepository.findByUsername((String) body.get("username"));
-        if (user.isEmpty()) {
-            return false;
+    public ResponseEntity<Map<String, Object>> getUser() throws ResponseEntityException {
+        try {
+            Map<String, Object> response = new HashMap<>();
+            List<UserModel> users = userRepository.findAll();
+            response.put("users", users);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            throw new ResponseEntityException("Error getting user", HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return true;
     }
 
-    public String register(Map<String, Object> body) {
-        if (this.checkUser(body)) {
+    private Boolean checkUser(String username) throws ResponseEntityException {
+        try {
+            List<UserModel> user = userRepository.findByUsername(username);
+            if (user.isEmpty()) {
+                return false;
+            }
+            return true;
+        } catch (Exception e) {
+            throw new ResponseEntityException("Error checking user", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public String register(RegisterDTO dto) throws ResponseEntityException {
+        if (this.checkUser(dto.getUsername())) {
             return "exits";
         }
-        String type = (String) body.get("type");
+        String type = dto.getType();
         String id;
-        if(type.equals("customer")){
-            id =  userCountService.getCountCustomer();
-        }
-        else{
-            id =  userCountService.getCountOwner();
+        if (type.equals("customer")) {
+            id = userCountService.getCountCustomer();
+        } else {
+            id = userCountService.getCountOwner();
         }
         UserModel user = new UserModel();
-        user.setId(id);
-        user.setUsername((String) body.get("username"));
-        user.setPassword((String) body.get("password"));
-        userRepository.save(user);
-        if(type.equals("customer")){
-            customerService.register(body,id);
+        try {
+            user.setId(id);
+            user.setUsername(dto.getUsername());
+            user.setPassword(dto.getPassword());
+            userRepository.save(user);
+        } catch (Exception e) {
+            throw new ResponseEntityException("can't create user: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        else{
-            ownerService.register(body,id);
+        if (type.equals("customer")) {
+            customerService.register(dto, id);
+        } else {
+            ownerService.register(dto, id);
             OwnerModel ownerModel = ownerRepository.findByOwnerId(id);
-            placeService.create(body,id,ownerModel);
+            placeService.create(dto, id, ownerModel);
         }
-        return id;
+        return JwtUtil.generateToken(id);
     }
 
     public String login(Map<String, Object> body) throws Exception {
@@ -108,7 +126,7 @@ public class UserService {
 
     }
 
-    public UserModel showDetail(Map<String, Object> body){
+    public UserModel showDetail(Map<String, Object> body) {
         String id = (String) body.get("id");
         return userRepository.findById(id).get();
     }

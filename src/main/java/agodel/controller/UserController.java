@@ -11,6 +11,10 @@ import agodel.model.OwnerModel;
 import agodel.service.UserService;
 import agodel.service.CustomerService;
 import agodel.service.OwnerService;
+import agodel.util.AuthenUtil;
+import agodel.DTO.UserDTO.*;
+import agodel.exception.ResponseEntityException;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.HttpStatus;
@@ -34,39 +38,27 @@ public class UserController {
         this.ownerService = ownerService;
     }
 
-    @GetMapping
-    public String sayHello() {
-        return "hello kuy";
-    }
-
-    @PostMapping
-    public Map<String, String> sayHelloPost() {
-        HashMap<String, String> map = new HashMap<>();
-        map.put("key", "POST");
-        return map;
-    }
-
-    @PostMapping("/postTest")
-    public String test(@RequestBody Map<String, Object> body){
-        System.out.println("kuy");
-        return (String) body.get("username");
-    }
-
-    @PostMapping("/getUser")
-    public List<UserModel>  get(@RequestBody Map<String, Object> body){
-        System.out.println(userService.getUser());
-        return userService.getUser();
+    @PostMapping("/getAllUser")
+    public ResponseEntity<Map<String, Object>> get(@RequestHeader(required = false) Map<String, Object> header,@RequestBody(required = false) Map<String, Object> body){
+        try {
+            AuthenUtil.authen(List.of("admin"), header);
+            return userService.getUser();
+        } catch (ResponseEntityException e) {
+            return e.getResponseEntity();
+        }
     }
 
     @PostMapping("/register")
-    public ResponseEntity  register(@RequestBody Map<String, Object> body){
+    public ResponseEntity<Map<String, Object>>  register(@RequestHeader(required = false) Map<String, Object> header,@RequestBody(required = false) Map<String, Object> body){
         try {
-            String id = userService.register(body);
+            RegisterDTO dto = new RegisterDTO(body);
+            AuthenUtil.authen(List.of("all"), header);
+            String token = userService.register(dto);
             Map<String, Object> response = new HashMap<>();
-            response.put("id", id);
+            response.put("token", token);
             return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        } catch (ResponseEntityException e) {
+            return e.getResponseEntity();
         }
     }
 
@@ -107,14 +99,15 @@ public class UserController {
     }
 
     @PostMapping("/getUserDetail")
-    public ResponseEntity<Map<String, Object>> getUserDetail(@RequestBody Map<String, Object> body) {
+    public ResponseEntity<Map<String, Object>> getUserDetail(@RequestHeader Map<String, Object> header, @RequestBody Map<String, Object> body) {
         try {
+            AuthenUtil.authen(List.of("customer"), header);
             UserModel user = userService.showDetail(body);
             Map<String, Object> response = new HashMap<>();
             response.put("user", user);
             return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        } catch (ResponseEntityException e) {
+            return e.getResponseEntity();
         }
     }
 

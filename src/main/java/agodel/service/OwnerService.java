@@ -3,12 +3,15 @@ package agodel.service;
 import java.util.List;
 import java.util.Map;
 
-import agodel.data.CustomerRepository;
+import agodel.DTO.UserDTO.RegisterDTO;
 import agodel.data.OwnerRepository;
-import agodel.model.CustomerModel;
+import agodel.exception.ResponseEntityException;
 import agodel.model.OwnerModel;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.http.HttpStatus;
+
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 
@@ -24,15 +27,18 @@ public class OwnerService {
         this.ownerRepository = ownerRepository;
     }
 
-    public String register(Map<String, Object> body,String id){
-        OwnerModel owner = new OwnerModel();
-        owner.setOwnerId(id);
-        owner.setFirstname((String) body.get("firstname"));
-        owner.setLastname((String) body.get("lastname"));
-        owner.setPhone((String) body.get("phone"));
-        owner.setEmail((String) body.get("email"));
-        ownerRepository.save(owner);
-        return "good";
+    public void register(RegisterDTO dto, String id) throws ResponseEntityException{
+        try {
+            OwnerModel ownerModel = new OwnerModel();
+            ownerModel.setOwnerId(id);
+            ownerModel.setFirstname(dto.getFirstname());
+            ownerModel.setLastname(dto.getLastname());
+            ownerModel.setPhone(dto.getPhone());
+            ownerModel.setEmail(dto.getEmail());
+            entityManager.persist(ownerModel);
+        } catch (Exception e){
+            throw new ResponseEntityException("can't create owner: "+e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     public List<OwnerModel> getUser() {

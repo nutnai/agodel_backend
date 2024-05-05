@@ -38,10 +38,11 @@ public class TestController{
     }
 
     @PostMapping("/validateToken")
-    public ResponseEntity<Map<String, Object>> showDetail(@RequestBody Map<String, Object> body){
+    public ResponseEntity<Map<String, Object>> showDetail(@RequestHeader Map<String, Object> header){
         Map<String, Object> res = new HashMap<>();
-        Object token = testService.validateToken((String) body.get("token"));
-        res.put("token", token);
+        String token = header.get("authorization").toString().substring(7);
+        Object id = testService.validateToken(token);
+        res.put("token", id);
         return ResponseEntity.ok(res);
     }
 }

@@ -1,14 +1,20 @@
 package agodel.service;
 
+import agodel.DTO.UserDTO.RegisterDTO;
+import agodel.DTO.PlaceDTO.CreateDTO;
 import agodel.data.OwnerRepository;
 import agodel.model.OwnerModel;
 import agodel.model.PlaceModel;
 import agodel.model.Receipt;
-import org.springframework.stereotype.Service;
 import agodel.data.PlaceRepository;
+import agodel.exception.ResponseEntityException;
+
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.stereotype.Service;
+import org.springframework.http.HttpStatus;
 
 import java.util.List;
 import java.util.Map;
@@ -30,25 +36,26 @@ public class PlaceService {
         this.roomService = roomService;
     }
 
-    public String create(Map<String, Object> body,String id, OwnerModel ownerModel) {
+    public void create(RegisterDTO registerDTO, String id, OwnerModel ownerModel) throws ResponseEntityException {
         try {
+            CreateDTO createDTO = new CreateDTO(registerDTO.getBody());
             PlaceModel place = new PlaceModel();
             PlaceModel lastRec = placeRepository.findTopByOrderByPlaceIdDesc();
-            int currentId = Integer.parseInt(lastRec.getPlaceId())+1;
+            int currentId = Integer.parseInt(lastRec.getPlaceId()) + 1;
             place.setPlaceId(String.valueOf(currentId));
-            place.setName("Enter name");
-            place.setAddress("Enter address");
+            place.setName(createDTO.getName());
+            place.setAddress(createDTO.getAddress());
             place.setOwner(ownerModel);
-            place.setStatus("Private");
+            place.setStatus("UNAVAILABLE");
             placeRepository.save(place);
-            return "Create place success";
         } catch (Exception e) {
-            return "Error creating place";
+            throw new ResponseEntityException("can't create place: " + e.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    public String edit(Map<String, Object> body){
-        try{
+    public String edit(Map<String, Object> body) {
+        try {
             String ownerId = (String) body.get("ownerId");
             OwnerModel owner = ownerRepository.findByOwnerId(ownerId);
             PlaceModel placeModel = placeRepository.findByOwnerOwnerId(ownerId);
@@ -57,28 +64,29 @@ public class PlaceService {
             placeModel.setStatus((String) body.get("newStatus"));
             entityManager.merge(placeModel);
             return "edit success!";
-        } catch (Exception e){
+        } catch (Exception e) {
             return "error!!!";
         }
     }
 
-    public List<PlaceModel> testSearch(Map<String, Object> body){
+    public List<PlaceModel> testSearch(Map<String, Object> body) {
         List<PlaceModel> placeAddress = placeRepository.findByAddressContains((String) body.get("address"));
         return placeAddress;
     }
 
-    public PlaceModel showDetail(Map<String, Object> body){
+    public PlaceModel showDetail(Map<String, Object> body) {
         String ownerId = (String) body.get("ownerId");
         return placeRepository.findByOwnerOwnerId(ownerId);
     }
 
-    public Receipt rentRoom(Map<String, Object> body){
+    public Receipt rentRoom(Map<String, Object> body) {
         String customerId = (String) body.get("customerId");
-        return roomService.calPrice(body,customerId);
+        return roomService.calPrice(body, customerId);
     }
 
-    public List<PlaceModel> search(Map<String, Object> body){
-        return placeRepository.findPlaceBySearchCriteria((String) body.get("address"), (Integer) body.get("numberPeople"),(Integer) body.get("lowerPrice"),(Integer) body.get("upperPrice"));
+    public List<PlaceModel> search(Map<String, Object> body) {
+        return placeRepository.findPlaceBySearchCriteria((String) body.get("address"),
+                (Integer) body.get("numberPeople"), (Integer) body.get("lowerPrice"), (Integer) body.get("upperPrice"));
     }
 
 }

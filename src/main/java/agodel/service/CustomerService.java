@@ -3,14 +3,16 @@ package agodel.service;
 import java.util.List;
 import java.util.Map;
 
+import agodel.DTO.UserDTO.RegisterDTO;
 import agodel.data.CustomerRepository;
+import agodel.exception.ResponseEntityException;
 import agodel.model.CustomerModel;
-import agodel.model.PlaceModel;
-import agodel.service.ReceiptService;
-
 import agodel.model.Receipt;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.http.HttpStatus;
+
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 
@@ -29,15 +31,18 @@ public class CustomerService {
         this.receiptService = receiptService;
     }
 
-    public String register(Map<String, Object> body,String id){
-        CustomerModel customers = new CustomerModel();
-        customers.setCustomerId(id);
-        customers.setFirstname((String) body.get("firstname"));
-        customers.setLastname((String) body.get("lastname"));
-        customers.setPhone((String) body.get("phone"));
-        customers.setEmail((String) body.get("email"));
-        customerRepository.save(customers);
-        return "good";
+    public void register(RegisterDTO dto, String id) throws ResponseEntityException{
+        try {
+            CustomerModel customerModel = new CustomerModel();
+            customerModel.setCustomerId(id);
+            customerModel.setFirstname(dto.getFirstname());
+            customerModel.setLastname(dto.getLastname());
+            customerModel.setPhone(dto.getPhone());
+            customerModel.setEmail(dto.getEmail());
+            entityManager.persist(customerModel);
+        } catch (Exception e){
+            throw new ResponseEntityException("can't create customer: "+e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     public CustomerModel showDetail(Map<String, Object> body){
