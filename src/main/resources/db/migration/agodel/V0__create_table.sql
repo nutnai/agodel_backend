@@ -35,7 +35,7 @@ CREATE TABLE `room`
     `place_id` varchar(10) NOT NULL,
     `room_id`       varchar(10) NOT NULL,
     `owner_id`      varchar(10) NOT NULL,
-    `bed`          smallint    DEFAULT NULL,
+    `room_type`      tinytext,
     `facility`     tinytext,
     `number_people` smallint    DEFAULT NULL,
     `price`        smallint    DEFAULT NULL,

@@ -4,8 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import agodel.model.PlaceModel;
-import agodel.model.RoomModel;
 import agodel.model.Receipt;
 import agodel.service.PlaceService;
 import agodel.util.AuthenUtil;
