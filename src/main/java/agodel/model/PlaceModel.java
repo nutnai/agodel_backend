@@ -1,9 +1,7 @@
 package agodel.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 
 @Getter
@@ -19,7 +17,6 @@ public class PlaceModel {
 
     private String name;
 
-    @Column(name = "address")
     private String address;
 
     @OneToOne
