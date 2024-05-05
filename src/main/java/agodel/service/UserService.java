@@ -2,18 +2,23 @@ package agodel.service;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
+import java.util.HashMap;
 
 import agodel.data.UserRepository;
+import agodel.exception.ResponseEntityException;
 import agodel.data.OwnerRepository;
-import agodel.model.CustomerModel;
 import agodel.model.OwnerModel;
 import agodel.model.UserModel;
+import agodel.DTO.UserDTO.*;
+
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import org.springframework.stereotype.Service;
 
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.http.HttpStatus;
+
+import agodel.util.JwtUtil;
 
 @Service
 @Transactional
@@ -33,7 +38,9 @@ public class UserService {
     @PersistenceContext
     private EntityManager entityManager;
 
-    public UserService(UserRepository userRepository, UserCountService userCountService, CustomerService customerService, OwnerService ownerService,PlaceService placeService,OwnerRepository ownerRepository) {
+    public UserService(UserRepository userRepository, UserCountService userCountService,
+            CustomerService customerService, OwnerService ownerService, PlaceService placeService,
+            OwnerRepository ownerRepository) {
 
         this.userRepository = userRepository;
         this.userCountService = userCountService;
@@ -43,59 +50,74 @@ public class UserService {
         this.ownerRepository = ownerRepository;
     }
 
-    public List<UserModel> getUser() {
-        return userRepository.findAll();
+    public Map<String, Object> getUser() throws ResponseEntityException {
+        try {
+            Map<String, Object> response = new HashMap<>();
+            List<UserModel> users = userRepository.findAll();
+            response.put("users", users);
+            return response;
+        } catch (Exception e) {
+            throw new ResponseEntityException("Error getting user", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
-    public Boolean checkUser(Map<String, Object> body) {
-        List<UserModel> user = userRepository.findByUsername((String) body.get("username"));
-        if (user.isEmpty()) {
-            return false;
+    private Boolean checkUser(String username) throws ResponseEntityException {
+        try {
+            List<UserModel> user = userRepository.findByUsername(username);
+            if (user.isEmpty()) {
+                return false;
+            }
+            return true;
+        } catch (Exception e) {
+            throw new ResponseEntityException("Error checking user", HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return true;
     }
 
-    public String register(Map<String, Object> body) {
-        if (this.checkUser(body)) {
-            return "exits";
+    public Map<String, Object> register(RegisterDTO registerDTO) throws ResponseEntityException {
+        if (this.checkUser(registerDTO.getUsername())) {
+            throw new ResponseEntityException("username already exist", HttpStatus.CONFLICT);
         }
-        String type = (String) body.get("type");
+        String type = registerDTO.getType();
         String id;
-        if(type.equals("customer")){
-            id =  userCountService.getCountCustomer();
-        }
-        else{
-            id =  userCountService.getCountOwner();
+        if (type.equals("customer")) {
+            id = userCountService.getCountCustomer();
+        } else {
+            id = userCountService.getCountOwner();
         }
         UserModel user = new UserModel();
-        user.setId(id);
-        user.setUsername((String) body.get("username"));
-        user.setPassword((String) body.get("password"));
-        userRepository.save(user);
-        if(type.equals("customer")){
-            customerService.register(body,id);
+        try {
+            user.setId(id);
+            user.setUsername(registerDTO.getUsername());
+            user.setPassword(registerDTO.getPassword());
+            userRepository.save(user);
+        } catch (Exception e) {
+            throw new ResponseEntityException("can't create user: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        else{
-            ownerService.register(body,id);
+        if (type.equals("customer")) {
+            customerService.register(registerDTO, id);
+        } else {
+            ownerService.register(registerDTO, id);
             OwnerModel ownerModel = ownerRepository.findByOwnerId(id);
-            placeService.create(body,id,ownerModel);
+            placeService.create(registerDTO, id, ownerModel);
         }
-        return id;
+        Map<String, Object> response = new HashMap<>();
+        response.put("token", JwtUtil.generateToken(id));
+        return response;
     }
 
-    public String login(Map<String, Object> body) throws Exception {
-        String username = (String) body.get("username");
+    public Map<String, Object> login(LoginDTO loginDTO) throws ResponseEntityException {
+        String username = loginDTO.getUsername();
         List<UserModel> users = userRepository.findByUsername(username);
         if (users.isEmpty()) {
-            throw new Exception("user not found");
-            
-
+            throw new ResponseEntityException("username not found", HttpStatus.NOT_FOUND);
         }
         String password = users.get(0).getPassword();
-        if (((String) body.get("password")).equals(password)) {
-            return users.get(0).getId();
+        if (!loginDTO.getPassword().equals(password)) {
+            throw new ResponseEntityException("wrong password", HttpStatus.UNAUTHORIZED);
         }
-        throw new Exception("password not match");
+        Map<String, Object> response = new HashMap<>();
+        response.put("token", JwtUtil.generateToken(users.get(0).getId()));
+        return response;
     }
 
     public String resetPassword(Map<String, Object> body) {
@@ -107,8 +129,14 @@ public class UserService {
 
     }
 
-    public UserModel showDetail(Map<String, Object> body){
-        String id = (String) body.get("id");
-        return userRepository.findById(id).get();
+    public Map<String, Object> showDetail(GetUserDTO getUserDTO) throws ResponseEntityException {
+        try {
+            UserModel userModel = userRepository.findById(getUserDTO.getUserId()).get();
+            Map<String, Object> response = new HashMap<>();
+            response.put("user", userModel);
+            return response;
+        } catch (Exception e) {
+            throw new ResponseEntityException("User not found", HttpStatus.NOT_FOUND);
+        }
     }
 }

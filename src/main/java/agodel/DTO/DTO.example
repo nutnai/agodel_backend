@@ -1,0 +1,29 @@
+package agodel.DTO.UserDTO;
+
+import jakarta.validation.constraints.*;
+
+import java.util.Map;
+
+import agodel.DTO.DTO;
+import agodel.exception.ResponseEntityException;
+import agodel.util.ValidateType;
+
+import lombok.*;
+
+@Setter
+@Getter
+public class exampleDTO extends DTO {
+
+    /* attribute */
+
+    public exampleDTO(Map<String, Object> body) throws ResponseEntityException{
+        super(body);
+        if (body == null) {
+            return;
+        }
+
+        //validate and set attributes
+
+        validate(this);
+    }
+}

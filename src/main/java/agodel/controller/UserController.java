@@ -1,19 +1,19 @@
 package agodel.controller;
 
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import agodel.model.CustomerModel;
-import agodel.model.UserModel;
-import agodel.model.OwnerModel;
 import agodel.service.UserService;
 import agodel.service.CustomerService;
 import agodel.service.OwnerService;
+import agodel.util.AuthenUtil;
+import agodel.util.AuthenUtil.Role;
+import agodel.DTO.UserDTO.*;
+import agodel.exception.ResponseEntityException;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 @RestController
@@ -27,116 +27,128 @@ public class UserController {
 
     private OwnerService ownerService;
 
-    public UserController(UserService userService,CustomerService customerService, OwnerService ownerService) {
+    public UserController(UserService userService, CustomerService customerService, OwnerService ownerService) {
 
         this.userService = userService;
         this.customerService = customerService;
         this.ownerService = ownerService;
     }
 
-    @GetMapping
-    public String sayHello() {
-        return "hello kuy";
-    }
-
-    @PostMapping
-    public Map<String, String> sayHelloPost() {
-        HashMap<String, String> map = new HashMap<>();
-        map.put("key", "POST");
-        return map;
-    }
-
-    @PostMapping("/postTest")
-    public String test(@RequestBody Map<String, Object> body){
-        System.out.println("kuy");
-        return (String) body.get("username");
-    }
-
-    @PostMapping("/getUser")
-    public List<UserModel>  get(@RequestBody Map<String, Object> body){
-        System.out.println(userService.getUser());
-        return userService.getUser();
+    @PostMapping("/getAllUser")
+    public ResponseEntity<Map<String, Object>> get(
+            @RequestHeader(required = false) Map<String, Object> header,
+            @RequestBody(required = false) Map<String, Object> body) {
+        try {
+            AuthenUtil.authen(List.of(Role.ADMIN), header);
+            return ResponseEntity.ok(userService.getUser());
+        } catch (ResponseEntityException e) {
+            return e.getResponseEntity();
+        }
     }
 
     @PostMapping("/register")
-    public ResponseEntity  register(@RequestBody Map<String, Object> body){
+    public ResponseEntity<Map<String, Object>> register(
+            @RequestHeader(required = false) Map<String, Object> header,
+            @RequestBody(required = false) Map<String, Object> body) {
         try {
-            String id = userService.register(body);
-            Map<String, Object> response = new HashMap<>();
-            response.put("id", id);
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+            AuthenUtil.authen(List.of(Role.ALL), header);
+            RegisterDTO registerDTO = new RegisterDTO(body);
+            return ResponseEntity.ok(userService.register(registerDTO));
+        } catch (ResponseEntityException e) {
+            return e.getResponseEntity();
         }
     }
 
-//    @PostMapping("/customer")
-//    public String  customer(@RequestBody Map<String, Object> body){
-//        return customerService.register(body);
-//    }
-
+    // ! todo: add email reset password
     @PostMapping("/resetPassword")
-    public String resetPassword(@RequestBody Map<String, Object> body) {
-
-        return userService.resetPassword(body);
+    public ResponseEntity<Map<String, Object>> resetPassword(
+            @RequestHeader(required = false) Map<String, Object> header,
+            @RequestBody(required = false) Map<String, Object> body) {
+        try {
+            AuthenUtil.authen(List.of(Role.ADMIN), header);
+            Map<String, Object> response = new HashMap<>();
+            response.put("message", userService.resetPassword(body));
+            return ResponseEntity.ok(response);
+        } catch (ResponseEntityException e) {
+            return e.getResponseEntity();
+        }
     }
 
     @PostMapping("/login")
-    public ResponseEntity testLogin(@RequestBody Map<String, Object> body) {
+    public ResponseEntity<Map<String, Object>> testLogin(
+            @RequestHeader(required = false) Map<String, Object> header,
+            @RequestBody(required = false) Map<String, Object> body) {
         try {
-            String id = userService.login(body);
-            Map<String, Object> response = new HashMap<>();
-            response.put("id", id);
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-        }
-    }
-    @PostMapping("/getCustomer")
-    public ResponseEntity<Map<String, Object>> getCustomer(@RequestBody Map<String, Object> body) {
-        try {
-            CustomerModel customer = customerService.showDetail(body);
-            Map<String, Object> response = new HashMap<>();
-            response.put("customer", customer);
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            AuthenUtil.authen(List.of(Role.ALL), header);
+            LoginDTO loginDTO = new LoginDTO(body);
+            return ResponseEntity.ok(userService.login(loginDTO));
+        } catch (ResponseEntityException e) {
+            return e.getResponseEntity();
         }
     }
 
-    @PostMapping("/getUserDetail")
-    public ResponseEntity<Map<String, Object>> getUserDetail(@RequestBody Map<String, Object> body) {
+    @PostMapping("/getCustomer")
+    public ResponseEntity<Map<String, Object>> getCustomer(
+            @RequestHeader(required = false) Map<String, Object> header,
+            @RequestBody(required = false) Map<String, Object> body) {
         try {
-            UserModel user = userService.showDetail(body);
-            Map<String, Object> response = new HashMap<>();
-            response.put("user", user);
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            AuthenUtil.authen(List.of(Role.ALL), header);
+            GetCustomerDTO getCustomerDTO = new GetCustomerDTO(body);
+            return ResponseEntity.ok(customerService.showDetail(getCustomerDTO));
+        } catch (ResponseEntityException e) {
+            return e.getResponseEntity();
+        }
+    }
+
+    @PostMapping("/getUser")
+    public ResponseEntity<Map<String, Object>> getUserDetail(
+            @RequestHeader(required = false) Map<String, Object> header,
+            @RequestBody(required = false) Map<String, Object> body) {
+        try {
+            AuthenUtil.authen(List.of(Role.ADMIN), header);
+            GetUserDTO getUserDTO = new GetUserDTO(body);
+            return ResponseEntity.ok(userService.showDetail(getUserDTO));
+        } catch (ResponseEntityException e) {
+            return e.getResponseEntity();
         }
     }
 
     @PostMapping("/getOwner")
-    public ResponseEntity<Map<String, Object>> getOwner(@RequestBody Map<String, Object> body) {
+    public ResponseEntity<Map<String, Object>> getOwner(
+            @RequestHeader(required = false) Map<String, Object> header,
+            @RequestBody(required = false) Map<String, Object> body) {
         try {
-            OwnerModel owner = ownerService.showDetail(body);
-            Map<String, Object> response = new HashMap<>();
-            response.put("owner", owner);
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            AuthenUtil.authen(List.of(Role.ALL), header);
+            GetOwnerDTO getOwnerDTO = new GetOwnerDTO(body);
+            return ResponseEntity.ok(ownerService.showDetail(getOwnerDTO));
+        } catch (ResponseEntityException e) {
+            return e.getResponseEntity();
         }
     }
 
     @PostMapping("/editCustomer")
-    public String editCustomer(@RequestBody Map<String, Object> body) {
-
-        return customerService.edit(body);
+    public ResponseEntity<Map<String, Object>> editCustomer(
+            @RequestHeader(required = false) Map<String, Object> header,
+            @RequestBody(required = false) Map<String, Object> body) {
+        try {
+            AuthenUtil.authen(List.of(Role.CUSTOMER_ID), header, body);
+            EditCustomerDTO editCustomer = new EditCustomerDTO(body);
+            return ResponseEntity.ok(customerService.edit(editCustomer));
+        } catch (ResponseEntityException e) {
+            return e.getResponseEntity();
+        }
     }
 
     @PostMapping("/editOwner")
-    public String editOwner(@RequestBody Map<String, Object> body) {
-
-        return ownerService.edit(body);
+    public ResponseEntity<Map<String, Object>> editOwner(
+            @RequestHeader(required = false) Map<String, Object> header,
+            @RequestBody(required = false) Map<String, Object> body) {
+        try {
+            AuthenUtil.authen(List.of(Role.OWNER_ID), header, body);
+            EditOwnerDTO editOwner = new EditOwnerDTO(body);
+            return ResponseEntity.ok(ownerService.edit(editOwner));
+        } catch (ResponseEntityException e) {
+            return e.getResponseEntity();
+        }
     }
 }
