@@ -37,6 +37,7 @@ public class CustomerService {
         try {
             CustomerModel customerModel = new CustomerModel();
             customerModel.setCustomerId(id);
+            customerModel.setUsername(dto.getUsername());
             customerModel.setFirstname(dto.getFirstname());
             customerModel.setLastname(dto.getLastname());
             customerModel.setPhone(dto.getPhone());

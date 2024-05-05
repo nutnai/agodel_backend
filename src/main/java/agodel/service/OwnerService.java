@@ -32,6 +32,7 @@ public class OwnerService {
         try {
             OwnerModel ownerModel = new OwnerModel();
             ownerModel.setOwnerId(id);
+            ownerModel.setUsername(dto.getUsername());
             ownerModel.setFirstname(dto.getFirstname());
             ownerModel.setLastname(dto.getLastname());
             ownerModel.setPhone(dto.getPhone());
