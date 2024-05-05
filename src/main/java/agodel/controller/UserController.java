@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import agodel.model.OwnerModel;
 import agodel.service.UserService;
 import agodel.service.CustomerService;
 import agodel.service.OwnerService;
@@ -15,7 +14,6 @@ import agodel.exception.ResponseEntityException;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 @RestController
@@ -37,7 +35,8 @@ public class UserController {
     }
 
     @PostMapping("/getAllUser")
-    public ResponseEntity<Map<String, Object>> get(@RequestHeader(required = false) Map<String, Object> header,
+    public ResponseEntity<Map<String, Object>> get(
+            @RequestHeader(required = false) Map<String, Object> header,
             @RequestBody(required = false) Map<String, Object> body) {
         try {
             AuthenUtil.authen(List.of(Role.ADMIN), header);
@@ -48,7 +47,8 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<Map<String, Object>> register(@RequestHeader(required = false) Map<String, Object> header,
+    public ResponseEntity<Map<String, Object>> register(
+            @RequestHeader(required = false) Map<String, Object> header,
             @RequestBody(required = false) Map<String, Object> body) {
         try {
             AuthenUtil.authen(List.of(Role.ALL), header);
@@ -75,7 +75,8 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Map<String, Object>> testLogin(@RequestHeader(required = false) Map<String, Object> header,
+    public ResponseEntity<Map<String, Object>> testLogin(
+            @RequestHeader(required = false) Map<String, Object> header,
             @RequestBody(required = false) Map<String, Object> body) {
         try {
             AuthenUtil.authen(List.of(Role.ALL), header);
@@ -87,7 +88,8 @@ public class UserController {
     }
 
     @PostMapping("/getCustomer")
-    public ResponseEntity<Map<String, Object>> getCustomer(@RequestHeader(required = false) Map<String, Object> header,
+    public ResponseEntity<Map<String, Object>> getCustomer(
+            @RequestHeader(required = false) Map<String, Object> header,
             @RequestBody(required = false) Map<String, Object> body) {
         try {
             AuthenUtil.authen(List.of(Role.ALL), header);
@@ -103,7 +105,7 @@ public class UserController {
             @RequestHeader(required = false) Map<String, Object> header,
             @RequestBody(required = false) Map<String, Object> body) {
         try {
-            AuthenUtil.authen(List.of(Role.ALL), header);
+            AuthenUtil.authen(List.of(Role.ADMIN), header);
             GetUserDTO getUserDTO = new GetUserDTO(body);
             return ResponseEntity.ok(userService.showDetail(getUserDTO));
         } catch (ResponseEntityException e) {
@@ -112,14 +114,15 @@ public class UserController {
     }
 
     @PostMapping("/getOwner")
-    public ResponseEntity<Map<String, Object>> getOwner(@RequestBody Map<String, Object> body) {
+    public ResponseEntity<Map<String, Object>> getOwner(
+            @RequestHeader(required = false) Map<String, Object> header,
+            @RequestBody(required = false) Map<String, Object> body) {
         try {
-            OwnerModel owner = ownerService.showDetail(body);
-            Map<String, Object> response = new HashMap<>();
-            response.put("owner", owner);
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            AuthenUtil.authen(List.of(Role.ALL), header);
+            GetOwnerDTO getOwnerDTO = new GetOwnerDTO(body);
+            return ResponseEntity.ok(ownerService.showDetail(getOwnerDTO));
+        } catch (ResponseEntityException e) {
+            return e.getResponseEntity();
         }
     }
 

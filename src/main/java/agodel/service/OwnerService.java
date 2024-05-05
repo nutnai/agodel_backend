@@ -2,8 +2,9 @@ package agodel.service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.HashMap;
 
-import agodel.DTO.UserDTO.RegisterDTO;
+import agodel.DTO.UserDTO.*;
 import agodel.data.OwnerRepository;
 import agodel.exception.ResponseEntityException;
 import agodel.model.OwnerModel;
@@ -45,8 +46,15 @@ public class OwnerService {
         return ownerRepository.findAll();
     }
 
-    public OwnerModel showDetail(Map<String, Object> body){
-        return ownerRepository.findByOwnerId((String) body.get("ownerId"));
+    public Map<String, Object> showDetail(GetOwnerDTO getOwnerDTO) throws ResponseEntityException{
+        try {
+            OwnerModel ownerModel = ownerRepository.findByOwnerId(getOwnerDTO.getOwnerId());
+            Map<String, Object> response = new HashMap<>();
+            response.put("owner", ownerModel);
+            return response;
+        } catch (Exception e){
+            throw new ResponseEntityException("Owner not found", HttpStatus.NOT_FOUND);
+        }
     }
 
     public String edit(Map<String, Object> body){
