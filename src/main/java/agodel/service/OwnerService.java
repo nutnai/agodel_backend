@@ -28,7 +28,7 @@ public class OwnerService {
         this.ownerRepository = ownerRepository;
     }
 
-    public void register(RegisterDTO dto, String id) throws ResponseEntityException{
+    public void register(RegisterDTO dto, String id) throws ResponseEntityException {
         try {
             OwnerModel ownerModel = new OwnerModel();
             ownerModel.setOwnerId(id);
@@ -37,8 +37,9 @@ public class OwnerService {
             ownerModel.setPhone(dto.getPhone());
             ownerModel.setEmail(dto.getEmail());
             entityManager.persist(ownerModel);
-        } catch (Exception e){
-            throw new ResponseEntityException("can't create owner: "+e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (Exception e) {
+            throw new ResponseEntityException("can't create owner: " + e.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -46,28 +47,44 @@ public class OwnerService {
         return ownerRepository.findAll();
     }
 
-    public Map<String, Object> showDetail(GetOwnerDTO getOwnerDTO) throws ResponseEntityException{
+    public Map<String, Object> showDetail(GetOwnerDTO getOwnerDTO) throws ResponseEntityException {
         try {
             OwnerModel ownerModel = ownerRepository.findByOwnerId(getOwnerDTO.getOwnerId());
             Map<String, Object> response = new HashMap<>();
             response.put("owner", ownerModel);
             return response;
-        } catch (Exception e){
+        } catch (Exception e) {
             throw new ResponseEntityException("Owner not found", HttpStatus.NOT_FOUND);
         }
     }
 
-    public String edit(Map<String, Object> body){
-        try{
-            OwnerModel ownerModel = ownerRepository.findByOwnerId((String) body.get("ownerId"));
-            ownerModel.setFirstname((String) body.get("newFirstName"));
-            ownerModel.setLastname((String) body.get("newLastName"));
-            ownerModel.setPhone((String) body.get("newPhone"));
-            ownerModel.setEmail((String) body.get("newEmail"));
-            entityManager.merge(ownerModel);
-            return "edit success!";
-        } catch (Exception e){
-            return "error!!!";
+    public Map<String, Object> edit(EditOwnerDTO editOwnerDTO) throws ResponseEntityException {
+        OwnerModel ownerModel;
+        try {
+            ownerModel = ownerRepository.findByOwnerId(editOwnerDTO.getOwnerId());
+        } catch (Exception e) {
+            throw new ResponseEntityException("Owner not found", HttpStatus.NOT_FOUND);
+        }
+        try {
+            if (editOwnerDTO.getNewFirstname() != null) {
+                ownerModel.setFirstname(editOwnerDTO.getNewFirstname());
+            }
+            if (editOwnerDTO.getNewLastname() != null) {
+                ownerModel.setLastname(editOwnerDTO.getNewLastname());
+            }
+            if (editOwnerDTO.getNewPhone() != null) {
+                ownerModel.setPhone(editOwnerDTO.getNewPhone());
+            }
+            if (editOwnerDTO.getNewEmail() != null) {
+                ownerModel.setEmail(editOwnerDTO.getNewEmail());
+            }
+            entityManager.persist(ownerModel);
+            Map<String, Object> response = new HashMap<>();
+            response.put("message", "edit success!");
+            return response;
+        } catch (Exception e) {
+            throw new ResponseEntityException("can't edit owner: " + e.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

@@ -140,8 +140,15 @@ public class UserController {
     }
 
     @PostMapping("/editOwner")
-    public String editOwner(@RequestBody Map<String, Object> body) {
-
-        return ownerService.edit(body);
+    public ResponseEntity<Map<String, Object>> editOwner(
+            @RequestHeader(required = false) Map<String, Object> header,
+            @RequestBody(required = false) Map<String, Object> body) {
+        try {
+            AuthenUtil.authen(List.of(Role.OWNER_ID), header, body);
+            EditOwnerDTO editOwner = new EditOwnerDTO(body);
+            return ResponseEntity.ok(ownerService.edit(editOwner));
+        } catch (ResponseEntityException e) {
+            return e.getResponseEntity();
+        }
     }
 }
