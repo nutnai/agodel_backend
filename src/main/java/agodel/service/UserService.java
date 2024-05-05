@@ -17,7 +17,6 @@ import jakarta.persistence.PersistenceContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 
 import agodel.util.JwtUtil;
 
@@ -130,8 +129,14 @@ public class UserService {
 
     }
 
-    public UserModel showDetail(Map<String, Object> body) {
-        String id = (String) body.get("id");
-        return userRepository.findById(id).get();
+    public Map<String, Object> showDetail(GetUserDTO getUserDTO) throws ResponseEntityException {
+        try {
+            UserModel userModel = userRepository.findById(getUserDTO.getUserId()).get();
+            Map<String, Object> response = new HashMap<>();
+            response.put("user", userModel);
+            return response;
+        } catch (Exception e) {
+            throw new ResponseEntityException("User not found", HttpStatus.NOT_FOUND);
+        }
     }
 }

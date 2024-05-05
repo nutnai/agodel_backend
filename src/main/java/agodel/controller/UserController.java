@@ -4,8 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import agodel.model.CustomerModel;
-import agodel.model.UserModel;
 import agodel.model.OwnerModel;
 import agodel.service.UserService;
 import agodel.service.CustomerService;
@@ -100,15 +98,14 @@ public class UserController {
         }
     }
 
-    @PostMapping("/getUserDetail")
-    public ResponseEntity<Map<String, Object>> getUserDetail(@RequestHeader Map<String, Object> header,
-            @RequestBody Map<String, Object> body) {
+    @PostMapping("/getUser")
+    public ResponseEntity<Map<String, Object>> getUserDetail(
+            @RequestHeader(required = false) Map<String, Object> header,
+            @RequestBody(required = false) Map<String, Object> body) {
         try {
-            AuthenUtil.authen(List.of("customer"), header);
-            UserModel user = userService.showDetail(body);
-            Map<String, Object> response = new HashMap<>();
-            response.put("user", user);
-            return ResponseEntity.ok(response);
+            AuthenUtil.authen(List.of(Role.ALL), header);
+            GetUserDTO getUserDTO = new GetUserDTO(body);
+            return ResponseEntity.ok(userService.showDetail(getUserDTO));
         } catch (ResponseEntityException e) {
             return e.getResponseEntity();
         }
