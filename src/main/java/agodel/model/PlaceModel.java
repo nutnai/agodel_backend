@@ -34,6 +34,10 @@ public class PlaceModel {
     }
 
     public void setStatus(String status) {
-        this.status = Status.valueOf(status);
+        if (status.equals("AVAILABLE")) {
+            this.status = Status.AVAILABLE;
+        } else if (status.equals("UNAVAILABLE")) {
+            this.status = Status.UNAVAILABLE;
+        }
     }
 }
