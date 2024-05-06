@@ -39,7 +39,7 @@ CREATE TABLE `room`
     `facility`     tinytext,
     `number_people` smallint    DEFAULT NULL,
     `price`        DOUBLE    DEFAULT NULL,
-    `status`      enum('AVAILABLE', 'UNAVAILABE') DEFAULT 'AVAILABLE',
+    `status`      enum('AVAILABLE', 'UNAVAILABLE') DEFAULT 'AVAILABLE',
     PRIMARY KEY (`room_id`),
     CONSTRAINT `room_ibfk_1` FOREIGN KEY (`place_id`) REFERENCES `place` (`place_id`)
 );
