@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDate;
+import java.sql.Date;
 
 @Getter
 @Setter
@@ -24,16 +24,16 @@ public class ReceiptModel {
     }
 
     @Column(name = "date_create")
-    private LocalDate dateCreate;
+    private Date dateCreate;
 
     @Column(name = "date_pay")
-    private LocalDate datePay;
+    private Date datePay;
 
     @Column(name = "date_check_in")
-    private LocalDate dateCheckIn;
+    private Date dateCheckIn;
 
     @Column(name = "date_check_out")
-    private LocalDate dateCheckOut;
+    private Date dateCheckOut;
 
     @Column(name = "day_count")
     private Integer dayCount;
