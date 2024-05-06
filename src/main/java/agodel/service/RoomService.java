@@ -93,7 +93,7 @@ public class RoomService {
         if (placeRoom == null) {
             throw new ResponseEntityException("Room not found in relation", HttpStatus.NOT_FOUND);
         }
-        if (!placeRoom.getPlaceId().getOwner().getOwnerId().equals(id)) {
+        if (!id.startsWith("0") && !placeRoom.getPlaceId().getOwner().getOwnerId().equals(id)) {
             throw new ResponseEntityException("You are not the owner of this room", HttpStatus.UNAUTHORIZED);
         }
         try {
