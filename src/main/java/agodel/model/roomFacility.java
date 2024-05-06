@@ -12,7 +12,7 @@ public class roomFacility {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private int id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "room_id", referencedColumnName = "room_id", nullable = false)

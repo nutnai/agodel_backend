@@ -4,6 +4,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface RoomFacilityRepository extends JpaRepository<Long, String> {
+public interface RoomFacilityRepository extends JpaRepository<Integer, String> {
 
 }
