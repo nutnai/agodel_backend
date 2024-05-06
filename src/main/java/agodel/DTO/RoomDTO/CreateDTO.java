@@ -30,11 +30,11 @@ public class CreateDTO extends DTO {
     @Size(min = 1, max = 512, message = "facility must be between 1 and 512 characters")
     private String facility;
 
-    @NotEmpty(message = "numberPeople is required")
+    @NotNull(message = "numberPeople is required")
     @Range(min = 1, max = 1000, message = "numberPeople must be between 1 and 1000")
     private Integer numberPeople;
 
-    @NotEmpty(message = "price is required")
+    @NotNull(message = "price is required")
     @Range(min = 0, max = 1000000000, message = "price must be between 0 and 1000000000")
     private Double price;
 
