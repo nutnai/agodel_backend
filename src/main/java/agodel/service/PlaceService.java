@@ -6,6 +6,7 @@ import agodel.DTO.PlaceDTO.*;
 import agodel.data.OwnerRepository;
 import agodel.model.OwnerModel;
 import agodel.model.PlaceModel;
+import agodel.model.RoomModel;
 import agodel.data.PlaceRepository;
 import agodel.exception.ResponseEntityException;
 
@@ -127,12 +128,12 @@ public class PlaceService {
                 searchDTO.setUpperPrice(1000000000.0);
             }
             Map<String, Object> response = new HashMap<>();
-            List<PlaceModel> places = placeRepository.findPlaceBySearchCriteria(
+            List<RoomModel> places = placeRepository.findRoomBySearchCriteria(
                     searchDTO.getKeyword(),
                     searchDTO.getNumberPeople(),
                     searchDTO.getLowerPrice(),
                     searchDTO.getUpperPrice());
-            response.put("places", places);
+            response.put("rooms", places);
             return response;
         } catch (Exception e) {
             throw new ResponseEntityException("can't search place: " + e.getMessage(),
