@@ -55,7 +55,7 @@ public class PlaceController {
             @RequestHeader(required = false) Map<String, Object> header,
             @RequestBody(required = false) Map<String, Object> body) {
         try {
-            String id = AuthenUtil.authen(List.of(Role.CUSTOMER_ID), header, body);
+            String id = AuthenUtil.authen(List.of(Role.CUSTOMER), header, body);
             ReserveDTO reserveDTO = new ReserveDTO(body);
             return ResponseEntity.ok(placeService.reserve(reserveDTO, id));
         } catch (ResponseEntityException e) {

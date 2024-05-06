@@ -18,8 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 import org.springframework.http.HttpStatus;
 
-import java.time.Instant;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.Map;
 
 @Service
@@ -60,7 +59,7 @@ public class ReceiptService {
                 throw new ResponseEntityException("Customer not found", HttpStatus.NOT_FOUND);
             }
             receipt.setReceiptId(currentId);
-            receipt.setDateCreate(Date.from(Instant.now()));
+            receipt.setDateCreate(LocalDate.now());
             receipt.setCustomerId(customer);
             receipt.setPrice(ValidateType.validateDouble(payload, "price"));
             receipt.setDateCheckIn(reserveDTO.getDateCheckIn());

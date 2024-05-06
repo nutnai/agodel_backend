@@ -7,7 +7,7 @@ import agodel.exception.ResponseEntityException;
 
 import java.io.Serializable;
 import java.util.Map;
-import java.util.Date;
+import java.time.LocalDate;
 
 @Component
 public class ValidateType implements Serializable {
@@ -53,20 +53,20 @@ public class ValidateType implements Serializable {
         }
     }
 
-    public static Date validateDate(Map<String, Object> body, String key) throws ResponseEntityException {
+    public static LocalDate validateDate(Map<String, Object> body, String key) throws ResponseEntityException {
         if (body == null) {
             return null;
         }
         if (body.get(key) == null) {
             return null;
         }
-        if (!(body.get(key) instanceof Date)) {
+        if (!(body.get(key) instanceof LocalDate)) {
             try {
-                return (Date) body.get(key);
+                return LocalDate.parse(body.get(key).toString());
             } catch (Exception e) {
                 throw new ResponseEntityException(key + " must be date", HttpStatus.BAD_REQUEST);
             }
         }
-        return (Date) body.get(key);
+        return (LocalDate) body.get(key);
     }
 }

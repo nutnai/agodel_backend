@@ -2,7 +2,7 @@ package agodel.DTO.PlaceDTO;
 
 import jakarta.validation.constraints.*;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.Map;
 
 import org.hibernate.validator.constraints.Range;
@@ -28,11 +28,11 @@ public class ReserveDTO extends DTO {
 
     @NotNull (message = "dateCheckIn is required")
     @FutureOrPresent(message = "dateCheckIn must be in the present or future")
-    private Date dateCheckIn;
+    private LocalDate dateCheckIn;
 
     @NotNull (message = "dateCheckOut is required")
     @FutureOrPresent(message = "dateCheckOut must be in the present or future")
-    private Date dateCheckOut;
+    private LocalDate dateCheckOut;
 
     public ReserveDTO(Map<String, Object> body) throws ResponseEntityException{
         super(body);
