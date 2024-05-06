@@ -140,3 +140,18 @@ CREATE TABLE `user_count`
     `count` INT          NOT NULL
 );
 
+CREATE TABLE `facility`
+(
+    `facility_id` varchar(10) NOT NULL PRIMARY KEY,
+    `name`        tinytext,
+    `description` TEXT
+);
+
+CREATE TABLE `room_facility`
+(
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `room_id`    varchar(10) NOT NULL,
+    `facility_id` varchar(10) NOT NULL,
+    CONSTRAINT `room_facility_ibfk_1` FOREIGN KEY (`room_id`) REFERENCES `room` (`room_id`),
+    CONSTRAINT `room_facility_ibfk_2` FOREIGN KEY (`facility_id`) REFERENCES `facility` (`facility_id`)
+);
