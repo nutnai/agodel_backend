@@ -149,7 +149,7 @@ CREATE TABLE `facility`
 
 CREATE TABLE `room_facility`
 (
-    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `id` LONG AUTO_INCREMENT PRIMARY KEY,
     `room_id`    varchar(10) NOT NULL,
     `facility_id` varchar(10) NOT NULL,
     CONSTRAINT `room_facility_ibfk_1` FOREIGN KEY (`room_id`) REFERENCES `room` (`room_id`),
